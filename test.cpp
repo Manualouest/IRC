@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/04 16:54:41 by mbirou           ###   ########.fr       */
+/*   Created: 2025/03/05 08:09:35 by mbirou            #+#    #+#             */
+/*   Updated: 2025/03/05 08:17:09 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <cstring>
 #include <errno.h>
 
 int main()
@@ -62,10 +63,12 @@ int main()
 		std::cout << "epoll_ctl failed" << pollfd << std::endl;
 		perror("error");
 	}
-
+// d
 
 	int clientfd = 0;
-	while (1)
+	char buffer[1024] = {0};
+	bool stop = false;
+	while (!stop)
 	{
 		if (pollfd < 0)
 		{
@@ -95,12 +98,19 @@ int main()
 			}
 			else
 			{
-				char buffer[1024] = {0};
+				memset(buffer, 0, sizeof(buffer));
 				int bread = recv(pollevents[i].data.fd, buffer, sizeof(buffer), MSG_DONTWAIT);
 				if (bread <= 0)
 					close(pollevents[i].data.fd);
 				else
 				{
+					std::cout << strncmp(buffer, "stop", 4) << std::endl;
+					if (!strncmp(buffer, "stop", 4))
+					{
+						close(pollevents[i].data.fd);
+						stop = true;
+						break ;
+					}
 					std::cout << "received: " << buffer << "|||" << std::endl;
 					send(pollevents[i].data.fd, buffer, sizeof(buffer), MSG_DONTWAIT);
 				}
