@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 17:24:52 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/05 09:18:01 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/05 13:51:26 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #include <cstdlib>
 
 #define MAX_EVENTS 10
+#define BUFFER_SIZE 1024
+#define MAX_CLIENT 10
 
 typedef struct	s_clientInfo
 {
@@ -44,8 +46,8 @@ class Server
 		Server	operator =(const Server &rhs);
 		~Server();
 
-		static void			_innit(const int &port);
-		static t_clientInfo	*_innitClient(const int &clientFd);
+		static void			_init(const int &port);
+		static t_clientInfo	*_initClient(const int &clientFd);
 		static bool			_getCmd(std::map<int, t_clientInfo*>::iterator client);
 		static void			_execCmd(std::map<int, t_clientInfo*>::iterator client);
 		static void			_cleanstop(const int &extraFd, const std::string &error);

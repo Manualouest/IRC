@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/05 10:36:44 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/05 15:20:40 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ struct epoll_event				Server::_multPoll[MAX_EVENTS];
 struct sockaddr_in				Server::_socket;
 bool							Server::_running = false;
 
-void	Server::_innit(const int &port)
+void	Server::_init(const int &port)
 {
-	_socketFd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
+	_socketFd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socketFd == -1)
 		_cleanstop(0, std::string("socket error: ") + std::string(strerror(errno)));
 	_socket.sin_family = AF_INET;
@@ -30,7 +30,7 @@ void	Server::_innit(const int &port)
 	_socket.sin_port = htons(port);
 	if (bind(_socketFd, (struct sockaddr *)&_socket, sizeof(_socket)) < 0)
 		_cleanstop(0, std::string("bind error: ") + std::string(strerror(errno)));
-	if(listen(_socketFd, 10) < 0)
+	if(listen(_socketFd, MAX_CLIENT) < 0)
 		_cleanstop(0, std::string("listen error: ") + std::string(strerror(errno)));
 	_pollFd = epoll_create1(0);
 	if (_pollFd < 0)
@@ -49,7 +49,7 @@ void	Server::ft_IRC(const int &port)
 	std::map<int, t_clientInfo*>::iterator	client;
 
 	signal(SIGINT, Server::_shutdown);
-	_innit(port);
+	_init(port);
 
 	_running = !_running;
 	while (_running)
@@ -66,11 +66,11 @@ void	Server::ft_IRC(const int &port)
 				clientFd = accept(_socketFd, (struct sockaddr *)&_socket, &(socketSize = sizeof(_socket)));
 				if (clientFd < 0)
 					_cleanstop(0, std::string("New client accept error: ") + std::string(strerror(errno)));
-				_poll.events = EPOLLIN;
+				_poll.events = EPOLLIN | EPOLLET;
 				_poll.data.fd = clientFd;
+				_clients.insert(_clients.begin(), std::pair<int, t_clientInfo*>(clientFd, _initClient(clientFd)));
 				if (epoll_ctl(_pollFd, EPOLL_CTL_ADD, clientFd, &_poll) < 0)
-					_cleanstop(clientFd, std::string("New client epoll_ctl error: ") + std::string(strerror(errno)));
-				_clients.insert(_clients.begin(), std::pair<int, t_clientInfo*>(clientFd, _innitClient(clientFd)));
+					_cleanstop(0, std::string("New client epoll_ctl error: ") + std::string(strerror(errno)));
 			}
 			else
 			{
@@ -87,28 +87,32 @@ void	Server::ft_IRC(const int &port)
 bool	Server::_getCmd(std::map<int, t_clientInfo*>::iterator client)
 {
 	int		nbRecv;
-	char	buffer[1024] = {0};
+	char	buffer[BUFFER_SIZE] = {0};
+
+	std::cout << "fd: " << client->first << std::endl;
 
 	do
 	{
 		memset(buffer, 0, sizeof(buffer));
 		nbRecv = recv(client->first, buffer, sizeof(buffer), MSG_DONTWAIT);
-		if (nbRecv <= 0)
+		if (nbRecv <= 0 || (nbRecv > 1 && buffer[nbRecv - 1] == '\n' && buffer[nbRecv - 2] != '\r'))
 		{
+			delete client->second;
 			close(client->first);
+			_clients.erase(client->first);
 			return (false);
 		}
 		client->second->cmd.append(buffer);
-	} while (nbRecv == 1024 && buffer[nbRecv - 1] != 0 && buffer[nbRecv - 1] != '\n');
-	return (buffer[nbRecv - 1] == '\n');
+	} while (nbRecv == BUFFER_SIZE && buffer[nbRecv - 1] != 0 && buffer[nbRecv - 2] != '\r' && buffer[nbRecv - 1] != '\n');
+	return (nbRecv > 1 && buffer[nbRecv - 2] == '\r' && buffer[nbRecv - 1] == '\n');
 }
 
 void	Server::_cleanstop(const int &extraFd, const std::string &error)
 {
 	for (std::map<int, t_clientInfo*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
-		close(it->first);
 		delete it->second;
+		close(it->first);
 	}
 	if (extraFd > 0)
 		close (extraFd);
@@ -120,7 +124,7 @@ void	Server::_cleanstop(const int &extraFd, const std::string &error)
 		throw(Server::IrcFailException(error));
 }
 
-t_clientInfo	*Server::_innitClient(const int &clientFd)
+t_clientInfo	*Server::_initClient(const int &clientFd)
 {
 	t_clientInfo	*client = new t_clientInfo;
 
