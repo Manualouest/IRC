@@ -1,10 +1,11 @@
 NAME = ircserv
 
-INCLUDES = -Iincludes/Server.hpp
+INCLUDES = -Iincludes/
 
 FLAGS = -g -Werror -Wall -Wextra -std=c++98
 
-SRC = src/Server.cpp
+SRC = src/Server.cpp\
+		src/Commands.cpp
 
 OBJ = $(addprefix obj/, $(SRC:.cpp=.o))
 

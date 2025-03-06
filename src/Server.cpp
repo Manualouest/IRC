@@ -6,19 +6,21 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/05 15:20:40 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/06 16:07:34 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
 
-std::map<int, t_clientInfo*>	Server::_clients = std::map<int, t_clientInfo*>();
-int								Server::_socketFd = 0;
-int								Server::_pollFd = 0;
-struct epoll_event				Server::_poll;
-struct epoll_event				Server::_multPoll[MAX_EVENTS];
-struct sockaddr_in				Server::_socket;
-bool							Server::_running = false;
+std::map<int, t_clientInfo*>			Server::_clients = std::map<int, t_clientInfo*>();
+std::map<std::string, t_channelInfo*>	Server::_channels = std::map<std::string, t_channelInfo*>();
+int										Server::_socketFd = 0;
+int										Server::_pollFd = 0;
+struct epoll_event						Server::_poll;
+struct epoll_event						Server::_multPoll[MAX_EVENTS];
+struct sockaddr_in						Server::_socket;
+bool									Server::_running = false;
+std::string								Server::_pass = "";
 
 void	Server::_init(const int &port)
 {
@@ -41,7 +43,7 @@ void	Server::_init(const int &port)
 		_cleanstop(0, std::string("epoll_ctl error: ") + std::string(strerror(errno)));
 }
 
-void	Server::ft_IRC(const int &port)
+void	Server::ft_IRC(const int &port, const std::string &pass)
 {
 	int										clientFd;
 	int										nbFds;
@@ -49,6 +51,7 @@ void	Server::ft_IRC(const int &port)
 	std::map<int, t_clientInfo*>::iterator	client;
 
 	signal(SIGINT, Server::_shutdown);
+	_pass = pass;
 	_init(port);
 
 	_running = !_running;
@@ -80,7 +83,7 @@ void	Server::ft_IRC(const int &port)
 			}
 		}
 	}
-	std::cout << "server stopping" << std::endl;
+	std::cout << "\33[2K\rserver is stopping" << std::endl;
 	_cleanstop(0, "");
 }
 
@@ -88,8 +91,6 @@ bool	Server::_getCmd(std::map<int, t_clientInfo*>::iterator client)
 {
 	int		nbRecv;
 	char	buffer[BUFFER_SIZE] = {0};
-
-	std::cout << "fd: " << client->first << std::endl;
 
 	do
 	{
@@ -131,17 +132,50 @@ t_clientInfo	*Server::_initClient(const int &clientFd)
 	client->cmd = "";
 	client->fd = clientFd;
 	client->logged = false;
+	client->passed = false;
 	client->nickname = "";
-	client->realname = "";
-	client->surname = "";
+	client->username = "";
 	return (client);
 }
 
 void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 {
 	std::cout << "exec: " << client->second->cmd;
+	int	func = 0;
+	for (; func < 5; ++func)
+	{
+		if (CMDSNAME[func] == client->second->cmd.substr(0, client->second->cmd.find_first_of(' ') + 1))
+			break ;
+	}
+	switch (func)
+	{
+		case 0:
+			Commands::pass(client, _pass);
+			break ;
+		case 1:
+			Commands::nick(client);
+			break;
+		case 2:
+			Commands::user(client);
+			break;
+		case 3:
+
+			break;
+		case 4:
+
+			break;
+		default:
+			std::cout << "erm idk what that is" << std::endl;
+	}
 	client->second->cmd = "";
+	send(client->first, "", 0, MSG_DONTWAIT);
 }
+
+/*
+PASS 1234
+NICK test
+USER test 0 * :test
+QUIT :Leaving*/
 
 void	Server::_shutdown(int signal)
 {
@@ -171,11 +205,11 @@ const char *Server::IrcFailException::what() const throw()
 
 int	main(int argc, char **argv)
 {
-	if (argc != 2)
+	if (argc != 3)
 		return (0);
 	try
 	{
-		Server::ft_IRC(atoi(argv[1]));
+		Server::ft_IRC(atoi(argv[1]), argv[2]);
 	}
 	catch (std::exception &e)
 	{
