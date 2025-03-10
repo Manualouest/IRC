@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 17:24:52 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/06 15:51:18 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/10 10:45:10 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #define MAX_EVENTS 10
 #define BUFFER_SIZE 1024
 #define MAX_CLIENT 10
-#define CMDSNAME (std::string[5]){"PASS ", "NICK ", "USER ", "QUIT ",  "JOIN "}
+#define CMDSNAME (std::string[4]){"PASS ", "NICK ", "USER ",  "JOIN "}
 
 class Server
 {
@@ -27,8 +27,6 @@ class Server
 
 	private:
 		Server();
-		Server(const Server &src);
-		Server	operator =(const Server &rhs);
 		~Server();
 
 		static void			_init(const int &port);
@@ -37,9 +35,8 @@ class Server
 		static void			_execCmd(std::map<int, t_clientInfo*>::iterator client);
 		static void			_cleanstop(const int &extraFd, const std::string &error);
 		static void			_shutdown(int signal);
-
+		
 		static std::map<int, t_clientInfo*>				_clients;
-		static std::map<std::string, t_channelInfo*>	_channels;
 		static int										_socketFd;
 		static int										_pollFd;
 		static struct epoll_event						_poll;
@@ -58,4 +55,5 @@ class Server
 			private:
 				std::string	_error;
 		};
+
 };

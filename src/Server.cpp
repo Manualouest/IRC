@@ -3,17 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/06 16:07:34 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/10 17:43:39 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/*
+https://modern.ircdocs.horse/#client-to-server-protocol-structure
+*/
+
 
 #include "../includes/Server.hpp"
 
 std::map<int, t_clientInfo*>			Server::_clients = std::map<int, t_clientInfo*>();
-std::map<std::string, t_channelInfo*>	Server::_channels = std::map<std::string, t_channelInfo*>();
 int										Server::_socketFd = 0;
 int										Server::_pollFd = 0;
 struct epoll_event						Server::_poll;
@@ -51,9 +55,10 @@ void	Server::ft_IRC(const int &port, const std::string &pass)
 	std::map<int, t_clientInfo*>::iterator	client;
 
 	signal(SIGINT, Server::_shutdown);
-	_pass = pass;
+	_pass = pass + "\r\n";
 	_init(port);
 
+	std::cout << "Server is starting" << std::endl;
 	_running = !_running;
 	while (_running)
 	{
@@ -140,35 +145,42 @@ t_clientInfo	*Server::_initClient(const int &clientFd)
 
 void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 {
-	std::cout << "exec: " << client->second->cmd;
-	int	func = 0;
-	for (; func < 5; ++func)
+	while (!client->second->cmd.empty())
 	{
-		if (CMDSNAME[func] == client->second->cmd.substr(0, client->second->cmd.find_first_of(' ') + 1))
-			break ;
-	}
-	switch (func)
-	{
-		case 0:
-			Commands::pass(client, _pass);
-			break ;
-		case 1:
-			Commands::nick(client);
-			break;
-		case 2:
-			Commands::user(client);
-			break;
-		case 3:
+		std::cout << "in: " << client->second->cmd.find_first_of("\r\n") << ", " << client->second->cmd.length() - 2 << ", " << client->second->cmd;
+		std::string	cmd = client->second->cmd.substr(0, client->second->cmd.find_first_of("\r\n"));
+		std::cout << "exec: '''" << cmd << std::endl << "'''" << std::endl;
+		int	func = 0;
+		for (; func < 4; ++func)
+		{
+			if (CMDSNAME[func] == cmd.substr(0, cmd.find_first_of(' ') + 1))
+				break ;
+		}
+		switch (func)
+		{
+			case 0:
+				Commands::pass(client, _pass);
+				break ;
+			case 1:
+				Commands::nick(client);
+				break;
+			case 2:
+				Commands::user(client);
+				break;
+			case 3:
+				Commands::join(client);
+				break;
+			case 4:
 
-			break;
-		case 4:
-
-			break;
-		default:
-			std::cout << "erm idk what that is" << std::endl;
+				break;
+			default:
+				std::cout << "erm idk what that is" << std::endl;
+		}
+		if (client->second->cmd.find_first_of("\r\n") == client->second->cmd.length() - 2)
+			client->second->cmd = "";
+		else
+			client->second->cmd = client->second->cmd.substr(client->second->cmd.find_first_of("\r\n") + 2);
 	}
-	client->second->cmd = "";
-	send(client->first, "", 0, MSG_DONTWAIT);
 }
 
 /*

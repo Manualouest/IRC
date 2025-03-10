@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Includes.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:13:23 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/06 16:03:11 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/10 11:05:27 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct	s_clientInfo
 typedef struct	s_channelInfo
 {
 	std::string					name;
-	std::map<std::string, bool>	users;
+	std::map<t_clientInfo*, bool>	users;
 	int							options[5];
 	std::string					topic;
 	std::string					password;
