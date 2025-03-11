@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:11:44 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/10 17:37:57 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/10 20:15:27 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void Commands::user(std::map<int, t_clientInfo*>::iterator client)
 	}
 	if (6 >= client->second->cmd.length() - 1)
 	{
-		send (client->first, std::string(":127.0.0.1 421 " + client->second->nickname + " :No argument given\r\n").c_str(), 16 + 22 + client->second->nickname.length(), MSG_DONTWAIT);
+		send (client->first, std::string(":127.0.0.1 421 " + client->second->nickname + " :No argument given\r\n").c_str(), 16 + 22 + client->second->nickname.length() - 2, MSG_DONTWAIT);
 		return ;
 	}
 	client->second->username = client->second->cmd.substr(client->second->cmd.find_first_of(' ') + 1, client->second->cmd.find_first_of(" \r\n", client->second->cmd.find_first_of(' ') + 1) - client->second->cmd.find_first_of(' ') - 1);
@@ -69,19 +69,19 @@ void Commands::user(std::map<int, t_clientInfo*>::iterator client)
 			<< "\n\tnickname: " << client->second->nickname
 			<< "\n\tpassed: " << client->second->passed
 			<< "\n\tusername: " << client->second->username << std::endl;
-	send(client->first, std::string(":127.0.0.1 001 " + client->second->nickname + " :Welcome to ft_IRC\r\n").c_str(), 16 + 22 + client->second->nickname.length(), MSG_DONTWAIT);
+	send(client->first, std::string(":127.0.0.1 001 " + client->second->nickname + " :Welcome to ft_IRC\r\n").c_str(), 16 + 22 + client->second->nickname.length() - 2, MSG_DONTWAIT);
 }
 
 void	Commands::join(std::map<int, t_clientInfo*>::iterator client)
 {
 	if (!client->second->logged)
 	{
-		send (client->first, std::string(":127.0.0.1 421 " + client->second->nickname + " :You are not logged in\r\n").c_str(), 16 + 26 + client->second->nickname.length(), MSG_DONTWAIT);
+		send (client->first, std::string(":127.0.0.1 421 " + client->second->nickname + " :You are not logged in\r\n").c_str(), 16 + 26 + client->second->nickname.length() - 2, MSG_DONTWAIT);
 		return ;
 	}
 	if (client->second->cmd.length() <= 8)
 	{
-		send (client->first, std::string(":127.0.0.1 421 " + client->second->nickname + " :No argument given\r\n").c_str(), 16 + 22 + client->second->nickname.length(), MSG_DONTWAIT);
+		send (client->first, std::string(":127.0.0.1 421 " + client->second->nickname + " :No argument given\r\n").c_str(), 16 + 22 + client->second->nickname.length() - 2, MSG_DONTWAIT);
 		return ;
 	}
 	std::string	channel = client->second->cmd.substr(6, client->second->cmd.find_first_of("\r\n") -6);
@@ -89,7 +89,7 @@ void	Commands::join(std::map<int, t_clientInfo*>::iterator client)
 	if (Channels::isChannelReal(channel))
 	{
 		if (Channels::isInChannel((*Channels::find(channel)).second->users, client->second->nickname))
-			send (client->first, std::string(":127.0.0.1 443 " + client->second->nickname + " :Already in channel\r\n").c_str(), 16 + 23 + client->second->nickname.length(), MSG_DONTWAIT);
+			send (client->first, std::string(":127.0.0.1 443 " + client->second->nickname + " :Already in channel\r\n").c_str(), 16 + 23 + client->second->nickname.length() - 2, MSG_DONTWAIT);
 		else
 			(*Channels::find(channel)).second->users.insert(std::pair<t_clientInfo *, bool>(client->second, false));
 	}

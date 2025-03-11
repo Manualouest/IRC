@@ -6,11 +6,12 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/10 17:43:39 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/10 17:57:46 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 /*
+https://www.alien.net.au/irc/irc2numerics.html
 https://modern.ircdocs.horse/#client-to-server-protocol-structure
 */
 

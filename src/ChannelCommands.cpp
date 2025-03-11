@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 10:42:07 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/10 17:54:50 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/10 20:23:02 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ void	ChannelCommands::createChannel(const std::string &name, t_clientInfo *user)
 	channel->topic = "";
 	channel->users.insert(std::pair<t_clientInfo*, bool>(user, true));
 	_channels.insert(std::pair<std::string, t_channelInfo*>(name, channel));
-	std::cout << std::string(":" + user->nickname + " JOIN #" + name).c_str() << std::endl;
-	send(user->fd, std::string(":" + user->nickname + " JOIN #" + name + "\r\n").c_str(), 2 + user->nickname.length() + 8 + name.length() + 3, MSG_DONTWAIT);
+	std::cout << std::string(":" + user->nickname + " JOIN #" + name).c_str() << ";" << std::string(":" + user->nickname + " JOIN #" + name + "\r\n").length() << ", " << 2 + user->nickname.length() + 8 + name.length() + 3 - 3 << std::endl;
+	send(user->fd, std::string(":" + user->nickname + " JOIN #" + name + "\r\n").c_str(), 2 + user->nickname.length() + 8 + name.length() + 3 - 3, MSG_DONTWAIT);
 	sendMsg(name, user, std::string(":" + user->nickname + " JOIN #" + name + "\r\n"));
 }
 
@@ -48,7 +48,7 @@ void	ChannelCommands::sendMsg(const std::string &name, const t_clientInfo *sende
 {
 	if (!isChannelReal(name))
 	{
-		send (sender->fd, "Channel doesn't exist\r\n", 24, MSG_DONTWAIT);
+		send(sender->fd, "Channel doesn't exist\r\n", 24, MSG_DONTWAIT);
 		return ;
 	}
 
@@ -58,7 +58,7 @@ void	ChannelCommands::sendMsg(const std::string &name, const t_clientInfo *sende
 
 	for (std::map<t_clientInfo*, bool>::iterator itClients = channel->second->users.begin(); itClients != channel->second->users.end(); ++itClients)
 		if ((*itClients).first->nickname != sender->nickname)
-			send ((*itClients).first->fd, msgC, messageLen, MSG_DONTWAIT);
+			send((*itClients).first->fd, msgC, messageLen, MSG_DONTWAIT);
 }
 
 std::map<std::string, t_channelInfo*>::const_iterator	ChannelCommands::find(const std::string &name)
