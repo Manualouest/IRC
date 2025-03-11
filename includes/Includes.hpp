@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Includes.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:13:23 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/10 11:05:27 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/11 08:50:42 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct	s_clientInfo
 {
 	std::string	username;
 	std::string	nickname;
+	std::string	realname;
 	int			fd;
 	bool		logged;
 	bool		passed;
@@ -34,9 +35,19 @@ typedef struct	s_clientInfo
 
 typedef struct	s_channelInfo
 {
-	std::string					name;
+	std::string						name;
 	std::map<t_clientInfo*, bool>	users;
-	int							options[5];
-	std::string					topic;
-	std::string					password;
+	int								options[5];
+	std::string						topic;
+	std::string						password;
 }								t_channelInfo;
+
+class Utils
+{
+	public:
+		static void Send(const int &fd, const std::string &msg);
+
+	private:
+		Utils();
+		~Utils();
+};
