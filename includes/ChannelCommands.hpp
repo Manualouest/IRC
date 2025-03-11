@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelCommands.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 10:39:01 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/10 13:47:36 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/11 14:54:31 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ class ChannelCommands
 		static void	createChannel(const std::string &name, t_clientInfo *user);
 		static bool	isInChannel(std::map<t_clientInfo*, bool> users, const std::string &nick);
 		static void	sendMsg(const std::string &name, const t_clientInfo *sender, const std::string &msg);
+		static void	who(const std::string &name, const t_clientInfo *sender);
 
 		static std::map<std::string, t_channelInfo*>::const_iterator	find(const std::string &name);
 		static std::map<std::string, t_channelInfo*>::const_iterator	begin();

@@ -1,0 +1,39 @@
+void Commands::mode(std::map<int, t_clientInfo*>::iterator client)
+{
+	if (!client->second->logged)
+	{
+		send (client->first, std::string(":127.0.0.1 421 " + client->second->nickname + " :You are not logged in\r\n").c_str(), 16 + 26 + client->second->nickname.length() - 2, MSG_DONTWAIT);
+		return ;
+	}
+	if (client->second->cmd.length() <= 8)
+	{
+		send (client->first, std::string(":127.0.0.1 421 " + client->second->nickname + " :No argument given\r\n").c_str(), 16 + 22 + client->second->nickname.length() - 2, MSG_DONTWAIT);
+		return ;
+	}
+	std::string	modeChar = client->second->cmd.substr(client->second->cmd.find_first_of(' ') + 1);
+	std::string	modeArgs = modeChar.substr(modeChar.find_first_of(' ') + 1);
+	modeChar = modeChar.substr(0, modeChar.find_first_of(' '));
+	std::deque<std::string>	mod;
+	std::cout << "Mode debug char: |" << modeChar << "|" << std::endl;
+	char	curMod = '+';
+	for (int i = 0; modeChar[i]; i++)
+	{
+		if (modeChar[i] == '\n' || modeChar[i] == ' ')
+			break ;
+		if (modeChar[i] == '-' || modeChar[i] == '+')
+		{
+			curMod = modeChar[i];
+			continue ;
+		}
+		if (curMod == '-')
+		{
+			mod.push_back("-" + modeChar.substr(i, 1));
+		}
+		if (curMod == '+')
+		{
+			mod.push_back("+" + modeChar.substr(i, 1));
+		}
+	}
+	for (unsigned long i = 0; i < mod.size(); i++)
+		std::cout << "" << mod[i] << std::endl;
+}

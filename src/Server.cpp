@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/10 17:57:46 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/11 14:56:05 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ t_clientInfo	*Server::_initClient(const int &clientFd)
 	client->passed = false;
 	client->nickname = "";
 	client->username = "";
+	client->realname = "";
 	return (client);
 }
 
@@ -172,7 +173,9 @@ void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 				Commands::join(client);
 				break;
 			case 4:
-
+				Commands::mode(client);
+				break;
+			case 5:
 				break;
 			default:
 				std::cout << "erm idk what that is" << std::endl;
@@ -183,12 +186,6 @@ void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 			client->second->cmd = client->second->cmd.substr(client->second->cmd.find_first_of("\r\n") + 2);
 	}
 }
-
-/*
-PASS 1234
-NICK test
-USER test 0 * :test
-QUIT :Leaving*/
 
 void	Server::_shutdown(int signal)
 {

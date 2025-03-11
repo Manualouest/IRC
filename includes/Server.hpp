@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 17:24:52 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/10 10:45:10 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/11 14:55:39 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #define MAX_EVENTS 10
 #define BUFFER_SIZE 1024
 #define MAX_CLIENT 10
-#define CMDSNAME (std::string[4]){"PASS ", "NICK ", "USER ",  "JOIN "}
+#define CMDSNAME (std::string[6]){"PASS ", "NICK ", "USER ",  "JOIN ", "WHO", "MODE "}
 
 class Server
 {
