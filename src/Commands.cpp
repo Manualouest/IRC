@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:11:44 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/11 14:57:23 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/12 10:41:33 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,42 +35,6 @@ bool Commands::checks(std::map<int, t_clientInfo*>::iterator client, int choice)
 		return (false);
 	}
 	return (true);
-}
-
-#include <deque>
-
-void Commands::mode(std::map<int, t_clientInfo*>::iterator client)
-{
-	// client->second->cmd = client->second->cmd.substr(5);
-	if (!checks(client, NOARGS))
-		return ;
-
-	std::string	modeChar = client->second->cmd.substr(client->second->cmd.find_first_of(' ') + 1);
-	std::string	modeArgs = modeChar.substr(modeChar.find_first_of(' ') + 1);
-	modeChar = modeChar.substr(0, modeChar.find_first_of(' '));
-	std::deque<std::string>	mod;
-	std::cout << "Mode debug char: |" << modeChar << "|" << std::endl;
-	char	curMod = '+';
-	for (int i = 0; modeChar[i]; i++)
-	{
-		if (modeChar[i] == '\n' || modeChar[i] == ' ')
-			break ;
-		if (modeChar[i] == '-' || modeChar[i] == '+')
-		{
-			curMod = modeChar[i];
-			continue ;
-		}
-		if (curMod == '-')
-		{
-			mod.push_back("-" + modeChar.substr(i, 1));
-		}
-		if (curMod == '+')
-		{
-			mod.push_back("+" + modeChar.substr(i, 1));
-		}
-	}
-	for (unsigned long i = 0; i < mod.size(); i++)
-		std::cout << "" << mod[i] << std::endl;
 }
 
 void Commands::pass(std::map<int, t_clientInfo*>::iterator client, const std::string &pass)

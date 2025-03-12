@@ -7,7 +7,8 @@ FLAGS = -g -Werror -Wall -Wextra -std=c++98
 SRC = src/Server.cpp\
 		src/Commands.cpp\
 		src/ChannelCommands.cpp\
-		src/Utils.cpp
+		src/Utils.cpp\
+		src/Commands/Mode.cpp
 
 OBJ = $(addprefix obj/, $(SRC:.cpp=.o))
 
