@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:13:23 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/11 08:50:42 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/13 14:18:19 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,15 @@
 #include <string>
 #include <cerrno>
 #include <cstdlib>
+#include <vector>
+#include <sstream>
+
+typedef struct s_cmdtoken
+{
+	std::string					cmd;
+	std::string					target;
+	std::vector<std::string>	args;
+}								t_cmdtoken;
 
 typedef struct	s_clientInfo
 {
@@ -31,6 +40,7 @@ typedef struct	s_clientInfo
 	bool		logged;
 	bool		passed;
 	std::string	cmd;
+	t_cmdtoken	cmdtoken;
 }				t_clientInfo;
 
 typedef struct	s_channelInfo
