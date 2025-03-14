@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 10:42:07 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/13 18:10:32 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/14 18:48:47 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	ChannelCommands::createChannel(const std::string &name, t_clientInfo *user)
 	channel->name = name;
 	channel->password = "";
 	channel->topic = "";
+	std::cout << "channel create debug: '" << name << "'" << std::endl;
 	channel->users.insert(std::pair<t_clientInfo*, bool>(user, true));
 	_channels.insert(std::pair<std::string, t_channelInfo*>(name, channel));
 }
@@ -43,12 +44,6 @@ bool	ChannelCommands::isInChannel(std::map<t_clientInfo*, bool> users, const std
 
 void	ChannelCommands::sendMsg(const std::string &name, const t_clientInfo *sender, const std::string &msg)
 {
-	if (!isChannelReal(name))
-	{
-		Utils::Send(sender->fd, "Channel doesn't exist\r\n");
-		return ;
-	}
-
 	std::map<std::string, t_channelInfo*>::const_iterator	channel = _channels.find(name);
 	int			messageLen = msg.length();
 	const char	*msgC = msg.c_str();

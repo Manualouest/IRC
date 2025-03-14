@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:26:08 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/13 18:27:14 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/14 15:24:15 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	Commands::user(std::map<int, t_clientInfo*>::iterator client)
 		return ;
 	if (client->second->cmdtoken.args.size() < 4)
 	{
-		Utils::Send(client->first, ":127.0.0.1 421 * :Syntax error\r\n");
+		Utils::Send(client->first, ":127.0.0.1 461 * :Not enough arguments given\r\n");
 		return ;
 	}
 

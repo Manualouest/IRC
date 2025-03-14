@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:27:04 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/13 18:08:37 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/14 15:19:13 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,9 @@
 
 void	Commands::join(std::map<int, t_clientInfo*>::iterator client)
 {
-	if (!checks(client, NOTLOG | NOTARG))
+	if (!checks(client, NOTLOG | NOTARG | BADCHN))
 		return ;
 
-	if (client->second->cmdtoken.target[0] != '#')
-	{
-		std::cout << client->second->cmdtoken.target[1] << std::endl;
-		Utils::Send(client->first, std::string(":127.0.0.1 479 " + client->second->nickname + " :Illegal channel name\r\n"));
-		return ;
-	}
 	std::string	channel = client->second->cmdtoken.target.substr(1, client->second->cmdtoken.target.length());
 	std::cout << "''" << channel << "''" << std::endl;
 	if (Channels::isChannelReal(channel))

@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:27:42 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/13 18:27:17 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/14 17:11:29 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ bool	Commands::checks(std::map<int, t_clientInfo*>::iterator client, int choice)
 {
 	if (choice & NOARGS && !client->second->cmdtoken.args.size())
 	{
-		Utils::Send(client->first, ":127.0.0.1 421 * :No argument given\r\n");
+		Utils::Send(client->first, ":127.0.0.1 461 * :Not enough arguments given\r\n");
 		return (false);
 	}
 	if (choice & NOPASS && !client->second->passed)
@@ -34,9 +34,14 @@ bool	Commands::checks(std::map<int, t_clientInfo*>::iterator client, int choice)
 		Utils::Send(client->first, std::string(":127.0.0.1 421 " + client->second->nickname + " :You are not logged in\r\n"));
 		return (false);
 	}
-	if (choice & NOTARG && !client->second->cmdtoken.target.size())
+	if (choice & NOTARG && !client->second->cmdtoken.target.length())
 	{
 		Utils::Send(client->first, std::string(":127.0.0.1 421 " + client->second->nickname + " :No target given\r\n"));
+		return (false);
+	}
+	if (choice & BADCHN && client->second->cmdtoken.target[0] != '#')
+	{
+		Utils::Send(client->first, std::string(":127.0.0.1 479 " + client->second->nickname + " :Illegal channel name\r\n"));
 		return (false);
 	}
 	return (true);

@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 17:24:52 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/13 18:26:01 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/14 14:30:19 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class Server
 		static void			_execCmd(std::map<int, t_clientInfo*>::iterator client);
 		static void			_cleanstop(const int &extraFd, const std::string &error);
 		static void			_shutdown(int signal);
+		static int			_findUser(const std::string &name);
 		
 		static std::map<int, t_clientInfo*>				_clients;
 		static int										_socketFd;
