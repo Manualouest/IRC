@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/14 18:36:18 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/15 09:28:36 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,8 @@ void	filltoken(t_cmdtoken &token, const std::string &cmd)
 {
 	token.cmd = cmd.substr(0, cmd.find_first_of(' ') + 1);
 	token.target = "";
-	if (!strcmp(token.cmd.c_str(), "JOIN ") || !strcmp(token.cmd.c_str(), "MODE ") || !strcmp(token.cmd.c_str(), "KICK ") || !strcmp(token.cmd.c_str(), "PRIVMSG "))
+	if (!strcmp(token.cmd.c_str(), "JOIN ") || !strcmp(token.cmd.c_str(), "MODE ") || !strcmp(token.cmd.c_str(), "KICK ") || !strcmp(token.cmd.c_str(), "PRIVMSG ")
+		 || !strcmp(token.cmd.c_str(), "PART "))
 		token.target = cmd.substr(token.cmd.length(), cmd.find_first_of(" \r\n", token.cmd.length()) - token.cmd.length());
 	token.args.clear();
 	std::string			lineArg;
@@ -179,7 +180,7 @@ void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 		filltoken(client->second->cmdtoken, cmd);
 		std::cout << "exec: '''" << cmd << std::endl << "'''" << std::endl;
 		int	func = 0;
-		for (; func < 5; ++func)
+		for (; func < 7; ++func)
 		{
 			if (CMDSNAME[func] == client->second->cmdtoken.cmd)
 				break ;
@@ -201,6 +202,12 @@ void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 			case 4:
 				Commands::privmsg(client, _findUser);
 				break;
+			case 5:
+				Commands::part(client);
+				break;
+			case 6:
+				Commands::quit(client, _delUser);
+				return ;
 			default:
 				std::cout << "erm idk what that is" << std::endl;
 		}
@@ -243,6 +250,13 @@ int	Server::_findUser(const std::string &name)
 		if (client->second->nickname == name)
 			return (client->first);
 	return (-1);
+}
+
+void	Server::_delUser(t_clientInfo *user)
+{
+	_clients.erase(user->fd);
+	close(user->fd);
+	delete user;
 }
 
 int	main(int argc, char **argv)

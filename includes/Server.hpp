@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 17:24:52 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/14 14:30:19 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/15 09:25:15 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #define MAX_EVENTS 10
 #define BUFFER_SIZE 1024
 #define MAX_CLIENT 10
-#define CMDSNAME (std::string[5]){"PASS ", "NICK ", "USER ",  "JOIN ", "PRIVMSG "}
+#define CMDSNAME (std::string[7]){"PASS ", "NICK ", "USER ",  "JOIN ", "PRIVMSG ", "PART ", "QUIT "}
 
 class Server
 {
@@ -36,6 +36,7 @@ class Server
 		static void			_cleanstop(const int &extraFd, const std::string &error);
 		static void			_shutdown(int signal);
 		static int			_findUser(const std::string &name);
+		static void			_delUser(t_clientInfo *user);
 		
 		static std::map<int, t_clientInfo*>				_clients;
 		static int										_socketFd;

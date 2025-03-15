@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 10:42:07 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/14 18:48:47 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/15 09:15:12 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,16 @@ void	ChannelCommands::names(const std::string &name, const t_clientInfo *sender)
 		Utils::Send(sender->fd, std::string(((*itClients).second ? " @" : " ") + (*itClients).first->nickname));
 	Utils::Send(sender->fd, std::string("\r\n"));
 	Utils::Send(sender->fd, std::string(":127.0.0.1 366 " + sender->nickname + " #" + name + " :End of /NAMES list\r\n"));
+}
+
+void	ChannelCommands::partUser(const std::string &channel, t_clientInfo *user)
+{
+	_channels.find(channel)->second->users.erase(user);
+	if (_channels.find(channel)->second->users.size() == 0)
+	{
+		delete _channels.find(channel)->second;
+		_channels.erase(channel);
+	}
 }
 
 std::map<std::string, t_channelInfo*>::const_iterator	ChannelCommands::find(const std::string &name)

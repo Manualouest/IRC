@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:12:12 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/14 15:18:14 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/15 09:20:34 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ class Commands
 		static void user(std::map<int, t_clientInfo*>::iterator client);
 		static void	join(std::map<int, t_clientInfo*>::iterator client);
 		static void	privmsg(std::map<int, t_clientInfo*>::iterator client, int (*f)(const std::string &));
+		static void	part(std::map<int, t_clientInfo*>::iterator client);
+		static void	quit(std::map<int, t_clientInfo*>::iterator client, void (*f)(t_clientInfo*));
 
 
 	private:
