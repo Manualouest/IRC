@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 17:24:52 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/11 14:55:39 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/17 09:04:38 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #define MAX_EVENTS 10
 #define BUFFER_SIZE 1024
 #define MAX_CLIENT 10
-#define CMDSNAME (std::string[6]){"PASS ", "NICK ", "USER ",  "JOIN ", "WHO", "MODE "}
+#define CMDSNAME (std::string[8]){"PASS ", "NICK ", "USER ",  "JOIN ", "PRIVMSG ", "PART ", "MODE ", "QUIT "}
 
 class Server
 {
@@ -35,6 +35,8 @@ class Server
 		static void			_execCmd(std::map<int, t_clientInfo*>::iterator client);
 		static void			_cleanstop(const int &extraFd, const std::string &error);
 		static void			_shutdown(int signal);
+		static int			_findUser(const std::string &name);
+		static void			_delUser(t_clientInfo *user);
 		
 		static std::map<int, t_clientInfo*>				_clients;
 		static int										_socketFd;
@@ -56,4 +58,6 @@ class Server
 				std::string	_error;
 		};
 
+		class Channels : public ChannelCommands
+		{};
 };
