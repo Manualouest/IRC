@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 10:42:07 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/18 11:06:08 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/18 14:31:19 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ bool	ChannelCommands::isInChannel(const std::string &channel, const std::string 
 {
 	std::map<t_clientInfo*, bool>	channelUsers = _channels.find(channel)->second->users;
 	for (std::map<t_clientInfo*, bool>::iterator itClients = channelUsers.begin(); itClients != channelUsers.end(); ++itClients)
-		if ((*itClients).first->nickname == nick)
+		if (itClients->first->nickname == nick)
 			return true;
 	return false;
 }
@@ -50,19 +50,18 @@ void	ChannelCommands::sendMsg(const std::string &channel, const std::string &sen
 	const char	*msgC = msg.c_str();
 
 	for (std::map<t_clientInfo*, bool>::iterator itClients = channelfd->second->users.begin(); itClients != channelfd->second->users.end(); ++itClients)
-		if ((*itClients).first->nickname != sender)
-			send((*itClients).first->fd, msgC, messageLen, MSG_DONTWAIT);
+		if (itClients->first->nickname != sender)
+			send(itClients->first->fd, msgC, messageLen, MSG_DONTWAIT);
 }
 
 void	ChannelCommands::names(const std::string &channel, const t_clientInfo *sender)
 {
 	std::map<std::string, t_channelInfo*>::const_iterator	channelfd = _channels.find(channel);
 
-	Utils::Send(sender->fd, std::string(":127.0.0.1 353 " + sender->nickname + " = #" + channel + " :"));
+	Utils::Send(sender->fd, NAMESTART(sender->nickname, channel));
 	for (std::map<t_clientInfo*, bool>::iterator itClients = channelfd->second->users.begin(); itClients != channelfd->second->users.end(); ++itClients)
-		Utils::Send(sender->fd, std::string(((*itClients).second ? " @" : " ") + (*itClients).first->nickname));
-	Utils::Send(sender->fd, std::string("\r\n"));
-	Utils::Send(sender->fd, std::string(":127.0.0.1 366 " + sender->nickname + " #" + channel + " :End of /NAMES list\r\n"));
+		Utils::Send(sender->fd, NAMELIST(itClients));
+	Utils::Send(sender->fd, NAMEEND(sender->nickname, channel));
 }
 
 void	ChannelCommands::partUser(const std::string &channel, t_clientInfo *user)

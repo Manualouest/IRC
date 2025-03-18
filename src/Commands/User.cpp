@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:26:08 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/18 10:31:37 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/18 13:13:59 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	Commands::user(std::map<int, t_clientInfo*>::iterator client)
 		return ;
 	if (client->second->cmdtoken.args.size() < 4)
 	{
-		Utils::Send(client->first, ":127.0.0.1 461 * :Not enough arguments given\r\n");
+		Utils::Send(client->first, NOTENOUGHARGS(client->second->nickname));
 		return ;
 	}
 
@@ -30,5 +30,5 @@ void	Commands::user(std::map<int, t_clientInfo*>::iterator client)
 			<< "\n\tnickname: " << client->second->nickname
 			<< "\n\tpassed: " << client->second->passed
 			<< "\n\tusername: " << client->second->username << std::endl;
-	Utils::Send(client->first, std::string(":127.0.0.1 001 " + client->second->nickname + " :Welcome to ft_IRC\r\n"));
+	Utils::Send(client->first, WELCOMEMSG(client->second->nickname));
 }

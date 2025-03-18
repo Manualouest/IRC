@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/18 10:47:34 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/18 14:33:09 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ https://modern.ircdocs.horse/#client-to-server-protocol-structure
 
 #include "../includes/Server.hpp"
 
-std::map<int, t_clientInfo*>			Server::_clients = std::map<int, t_clientInfo*>();
-int										Server::_socketFd = 0;
-int										Server::_pollFd = 0;
-struct epoll_event						Server::_poll;
-struct epoll_event						Server::_multPoll[MAX_EVENTS];
-struct sockaddr_in						Server::_socket;
-bool									Server::_running = false;
-std::string								Server::_pass = "";
+std::map<int, t_clientInfo*>	Server::_clients = std::map<int, t_clientInfo*>();
+int								Server::_socketFd = 0;
+int								Server::_pollFd = 0;
+struct epoll_event				Server::_poll;
+struct epoll_event				Server::_multPoll[MAX_EVENTS];
+struct sockaddr_in				Server::_socket;
+bool							Server::_running = false;
+std::string						Server::_pass = "";
 
 void	Server::_init(const int &port)
 {
