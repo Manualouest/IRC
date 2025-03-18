@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 10:41:35 by mbatty            #+#    #+#             */
-/*   Updated: 2025/03/18 11:15:00 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/18 12:57:21 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,8 +176,11 @@ void Commands::mode(std::map<int, t_clientInfo*>::iterator client)
 
 	if (Channels::isChannelReal(channel))
 	{
-		if (!client->second)
+		if (!ChannelCommands::isUserOp(channel, client->second->nickname))
+		{
 			Utils::Send(client->first, std::string(":127.0.0.1 482 " + client->second->nickname + " :You are not channel operator\r\n"));	
+			return ;
+		}
 		if (!args.size())
 		{
 			returnModeInfo(channel, client);

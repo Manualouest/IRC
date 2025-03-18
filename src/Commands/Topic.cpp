@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 10:57:35 by mbatty            #+#    #+#             */
-/*   Updated: 2025/03/18 11:52:09 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/18 13:05:27 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,14 @@ void Commands::topic(std::map<int, t_clientInfo*>::iterator client)
 		}
 		else
 		{
-			if (chan->second->isTopicOPOnly)
+			if (chan->second->isTopicOPOnly && !ChannelCommands::isUserOp(channel, client->second->nickname))
 				Utils::Send(client->first, std::string(":127.0.0.1 482 " + client->second->nickname + " :You are not channel operator\r\n"));	
-			chan->second->topic = args[0].substr(1);
-			Utils::Send(client->first, std::string(":" + client->second->nickname + " TOPIC #" + channel + " :" + chan->second->topic + "\r\n"));
+			else
+			{
+				chan->second->topic = args[0].substr(1);
+				ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " TOPIC #" + channel + " :" + chan->second->topic + "\r\n"));
+				Utils::Send(client->first, std::string(":" + client->second->nickname + " TOPIC #" + channel + " :" + chan->second->topic + "\r\n"));
+			}
 		}
 	}
 	else
