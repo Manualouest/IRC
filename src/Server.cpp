@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/15 09:28:36 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/18 10:47:34 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,8 @@ void	filltoken(t_cmdtoken &token, const std::string &cmd)
 		 || !strcmp(token.cmd.c_str(), "PART "))
 		token.target = cmd.substr(token.cmd.length(), cmd.find_first_of(" \r\n", token.cmd.length()) - token.cmd.length());
 	token.args.clear();
+	if (token.cmd.length() + token.target.length() + !token.target.empty() >= cmd.length())
+		return ;
 	std::string			lineArg;
 	std::stringstream	rawString(&cmd.c_str()[token.cmd.length() + token.target.length() + !token.target.empty()]);
 	std::cout << "cmd: " << token.cmd << ": ";

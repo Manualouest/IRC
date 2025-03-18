@@ -59,6 +59,7 @@
 		"cinttypes": "cpp",
 		"typeinfo": "cpp",
 		"csignal": "cpp",
-		"cerrno": "cpp"
+		"cerrno": "cpp",
+		"set": "cpp"
 	}
 }
