@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 10:42:07 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/17 13:47:53 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/18 11:16:17 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,63 +14,58 @@
 
 std::map<std::string, t_channelInfo*>	ChannelCommands::_channels = std::map<std::string, t_channelInfo*>();
 
-bool	ChannelCommands::isChannelReal(const std::string &name)
+bool	ChannelCommands::isChannelReal(const std::string &channel)
 {
 	for (std::map<std::string, t_channelInfo*>::const_iterator it = begin(); it != end(); ++it)
-		if ((*it).first == name)
+		if ((*it).first == channel)
 			return true;
 	return false;
 }
 
-void	ChannelCommands::createChannel(const std::string &name, t_clientInfo *user)
+void	ChannelCommands::createChannel(const std::string &channel, t_clientInfo *user)
 {
-	t_channelInfo	*channel = new t_channelInfo;
+	t_channelInfo	*channelfd = new t_channelInfo;
 
-	channel->name = name;
-	channel->password = "";
-	channel->topic = "";
-	channel->isInviteOnly = false;
-	channel->isTopicOPOnly = false;
-	channel->limit = 0;
-	std::cout << "channel create debug: '" << name << "'" << std::endl;
-	channel->users.insert(std::pair<t_clientInfo*, bool>(user, true));
-	_channels.insert(std::pair<std::string, t_channelInfo*>(name, channel));
+	channelfd->name = channel;
+	channelfd->password = "";
+	channelfd->topic = "";
+	channelfd->isInviteOnly = false;
+	channelfd->isTopicOPOnly = false;
+	channelfd->limit		= 0;
+	std::cout << "channel create debug: '" << channel << "'" << std::endl;
+	channelfd->users.insert(std::pair<t_clientInfo*, bool>(user, true));
+	_channels.insert(std::pair<std::string, t_channelInfo*>(channel, channelfd));
 }
 
-bool	ChannelCommands::isInChannel(std::map<t_clientInfo*, bool> users, const std::string &nick)
+bool	ChannelCommands::isInChannel(const std::string &channel, const std::string &nick)
 {
-	for (std::map<t_clientInfo*, bool>::iterator itClients = users.begin(); itClients != users.end(); ++itClients)
+	std::map<t_clientInfo*, bool>	channelUsers = _channels.find(channel)->second->users;
+	for (std::map<t_clientInfo*, bool>::iterator itClients = channelUsers.begin(); itClients != channelUsers.end(); ++itClients)
 		if ((*itClients).first->nickname == nick)
 			return true;
 	return false;
 }
 
-void	ChannelCommands::sendMsg(const std::string &name, const t_clientInfo *sender, const std::string &msg)
+void	ChannelCommands::sendMsg(const std::string &channel, const std::string &sender, const std::string &msg)
 {
-	std::map<std::string, t_channelInfo*>::const_iterator	channel = _channels.find(name);
+	std::map<std::string, t_channelInfo*>::const_iterator	channelfd = _channels.find(channel);
 	int			messageLen = msg.length();
 	const char	*msgC = msg.c_str();
 
-	for (std::map<t_clientInfo*, bool>::iterator itClients = channel->second->users.begin(); itClients != channel->second->users.end(); ++itClients)
-		if ((*itClients).first->nickname != sender->nickname)
+	for (std::map<t_clientInfo*, bool>::iterator itClients = channelfd->second->users.begin(); itClients != channelfd->second->users.end(); ++itClients)
+		if ((*itClients).first->nickname != sender)
 			send((*itClients).first->fd, msgC, messageLen, MSG_DONTWAIT);
 }
 
-void	ChannelCommands::names(const std::string &name, const t_clientInfo *sender)
+void	ChannelCommands::names(const std::string &channel, const t_clientInfo *sender)
 {
-	if (!isChannelReal(name))
-	{
-		Utils::Send(sender->fd, "Channel doesn't exist\r\n");
-		return ;
-	}
+	std::map<std::string, t_channelInfo*>::const_iterator	channelfd = _channels.find(channel);
 
-	std::map<std::string, t_channelInfo*>::const_iterator	channel = _channels.find(name);
-
-	Utils::Send(sender->fd, std::string(":127.0.0.1 353 " + sender->nickname + " = #" + name + " :"));
-	for (std::map<t_clientInfo*, bool>::iterator itClients = channel->second->users.begin(); itClients != channel->second->users.end(); ++itClients)
+	Utils::Send(sender->fd, std::string(":127.0.0.1 353 " + sender->nickname + " = #" + channel + " :"));
+	for (std::map<t_clientInfo*, bool>::iterator itClients = channelfd->second->users.begin(); itClients != channelfd->second->users.end(); ++itClients)
 		Utils::Send(sender->fd, std::string(((*itClients).second ? " @" : " ") + (*itClients).first->nickname));
 	Utils::Send(sender->fd, std::string("\r\n"));
-	Utils::Send(sender->fd, std::string(":127.0.0.1 366 " + sender->nickname + " #" + name + " :End of /NAMES list\r\n"));
+	Utils::Send(sender->fd, std::string(":127.0.0.1 366 " + sender->nickname + " #" + channel + " :End of /NAMES list\r\n"));
 }
 
 void	ChannelCommands::partUser(const std::string &channel, t_clientInfo *user)
@@ -83,9 +78,30 @@ void	ChannelCommands::partUser(const std::string &channel, t_clientInfo *user)
 	}
 }
 
-std::map<std::string, t_channelInfo*>::const_iterator	ChannelCommands::find(const std::string &name)
+std::map<std::string, t_channelInfo*>::const_iterator	ChannelCommands::find(const std::string &channel)
 {
-	return (_channels.find(name));
+	return (_channels.find(channel));
+}
+
+bool	ChannelCommands::isUserOp(const std::string &channel, const std::string &user)
+{
+	if (findUser(channel, user) != channelUserEnd(channel))
+		return (ChannelCommands::findUser(channel, user)->second);
+	return (false);
+}
+
+std::map<t_clientInfo*, bool>::const_iterator	ChannelCommands::findUser(const std::string &channel, const std::string &user)
+{
+	std::map<t_clientInfo *, bool> channelUsers = _channels.find(channel)->second->users;
+	for (std::map<t_clientInfo*, bool>::const_iterator it = channelUsers.begin(); it != channelUsers.end(); ++it)
+		if (it->first->nickname == user)
+			return (it);
+	return (channelUserEnd(channel));
+}
+
+std::map<t_clientInfo*, bool>::const_iterator	ChannelCommands::channelUserEnd(const std::string &channel)
+{
+	return (_channels.find(channel)->second->users.end());
 }
 
 std::map<std::string, t_channelInfo*>::const_iterator	ChannelCommands::begin()

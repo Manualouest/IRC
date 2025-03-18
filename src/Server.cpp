@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/17 09:04:23 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/18 11:18:18 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,9 +152,11 @@ void	filltoken(t_cmdtoken &token, const std::string &cmd)
 	token.cmd = cmd.substr(0, cmd.find_first_of(' ') + 1);
 	token.target = "";
 	if (!strcmp(token.cmd.c_str(), "JOIN ") || !strcmp(token.cmd.c_str(), "MODE ") || !strcmp(token.cmd.c_str(), "KICK ") || !strcmp(token.cmd.c_str(), "PRIVMSG ")
-		 || !strcmp(token.cmd.c_str(), "PART "))
+		 || !strcmp(token.cmd.c_str(), "PART ") || !strcmp(token.cmd.c_str(), "TOPIC "))
 		token.target = cmd.substr(token.cmd.length(), cmd.find_first_of(" \r\n", token.cmd.length()) - token.cmd.length());
 	token.args.clear();
+	if (token.cmd.length() + token.target.length() + !token.target.empty() >= cmd.length())
+		return ;
 	std::string			lineArg;
 	std::stringstream	rawString(&cmd.c_str()[token.cmd.length() + token.target.length() + !token.target.empty()]);
 	std::cout << "cmd: " << token.cmd << ": ";
@@ -180,7 +182,7 @@ void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 		filltoken(client->second->cmdtoken, cmd);
 		std::cout << "exec: '''" << cmd << std::endl << "'''" << std::endl;
 		int	func = 0;
-		for (; func < 8; ++func)
+		for (; func < 9; ++func)
 		{
 			if (CMDSNAME[func] == client->second->cmdtoken.cmd)
 				break ;
@@ -209,6 +211,9 @@ void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 				Commands::mode(client);
 				break;
 			case 7:
+				Commands::topic(client);
+				break;
+			case 8:
 				Commands::quit(client, _delUser);
 				return ;
 			default:

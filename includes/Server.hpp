@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 17:24:52 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/17 09:04:38 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/18 11:07:50 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #define MAX_EVENTS 10
 #define BUFFER_SIZE 1024
 #define MAX_CLIENT 10
-#define CMDSNAME (std::string[8]){"PASS ", "NICK ", "USER ",  "JOIN ", "PRIVMSG ", "PART ", "MODE ", "QUIT "}
+#define CMDSNAME (std::string[9]){"PASS ", "NICK ", "USER ",  "JOIN ", "PRIVMSG ", "PART ", "MODE ", "TOPIC ", "QUIT "}
 
 class Server
 {

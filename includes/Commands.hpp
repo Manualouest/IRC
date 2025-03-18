@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:12:12 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/17 13:43:16 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/18 11:05:53 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,13 @@ class Commands
 		static void	part(std::map<int, t_clientInfo*>::iterator client);
 		static void	mode(std::map<int, t_clientInfo*>::iterator client);
 		static void	quit(std::map<int, t_clientInfo*>::iterator client, void (*f)(t_clientInfo*));
+		static void topic(std::map<int, t_clientInfo*>::iterator client);
 
-		static void	modeOperator(char mod, std::string channel, std::vector<std::string> &args);
-		static void	modeKeypass(char mod, std::string channel, std::vector<std::string> &args);
-		static void	modeUserLimit(char mod, std::string channel, std::vector<std::string> &args);
-		static void	modeTopicAccess(char mod, std::string channel, std::vector<std::string> &args);
-		static void	modeInviteOnly(char mod, std::string channel, std::vector<std::string> &args);
+		static void	modeOperator(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
+		static void	modeKeypass(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
+		static void	modeUserLimit(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
+		static void	modeTopicAccess(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
+		static void	modeInviteOnly(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
 		static void	returnModeInfo(std::string channel, std::map<int, t_clientInfo*>::iterator client);
 	private:
 		Commands();

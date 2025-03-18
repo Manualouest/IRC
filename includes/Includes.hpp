@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:13:23 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/17 13:26:02 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/18 11:13:55 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 #include <cerrno>
 #include <cstdlib>
 #include <vector>
+#include <set>
 #include <sstream>
-#include <utility>
 
 typedef struct s_cmdtoken
 {
@@ -51,9 +51,9 @@ typedef struct	s_channelInfo
 	int								options[5];
 	std::string						topic;
 	std::string						password;
-	int								limit;
 	bool							isTopicOPOnly;
 	bool							isInviteOnly;
+	int								limit;
 }								t_channelInfo;
 
 class Utils

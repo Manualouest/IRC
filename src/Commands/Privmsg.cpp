@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:26:04 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/14 19:06:56 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/18 10:31:17 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ void	Commands::privmsgChannel(std::map<int, t_clientInfo*>::iterator client)
 		std::cout << "'" << channel << "'" << std::endl;
 		return ;
 	}
-	if (!Channels::isInChannel(Channels::find(channel)->second->users, client->second->nickname))
+	if (!Channels::isInChannel(channel, client->second->nickname))
 	{
 		Utils::Send(client->first, ":127.0.0.1 404 " + client->second->nickname + " :Cannot send to channel.\r\n");
 		return ;
 	}
-	Channels::sendMsg(channel, client->second, std::string(":" + client->second->nickname + " PRIVMSG " + client->second->cmdtoken.target
+	Channels::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " PRIVMSG " + client->second->cmdtoken.target
 				 + " " + client->second->cmdtoken.args[0] + "\r\n"));
 }
 
