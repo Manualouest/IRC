@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:12:12 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/17 13:26:41 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/17 13:43:16 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class Commands
 		static void	modeUserLimit(char mod, std::string channel, std::vector<std::string> &args);
 		static void	modeTopicAccess(char mod, std::string channel, std::vector<std::string> &args);
 		static void	modeInviteOnly(char mod, std::string channel, std::vector<std::string> &args);
+		static void	returnModeInfo(std::string channel, std::map<int, t_clientInfo*>::iterator client);
 	private:
 		Commands();
 		~Commands();

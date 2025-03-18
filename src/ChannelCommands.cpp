@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelCommands.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 10:42:07 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/15 09:15:12 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/17 13:47:53 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@ void	ChannelCommands::createChannel(const std::string &name, t_clientInfo *user)
 	channel->name = name;
 	channel->password = "";
 	channel->topic = "";
+	channel->isInviteOnly = false;
+	channel->isTopicOPOnly = false;
+	channel->limit = 0;
 	std::cout << "channel create debug: '" << name << "'" << std::endl;
 	channel->users.insert(std::pair<t_clientInfo*, bool>(user, true));
 	_channels.insert(std::pair<std::string, t_channelInfo*>(name, channel));
