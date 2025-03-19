@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 10:41:35 by mbatty            #+#    #+#             */
-/*   Updated: 2025/03/19 09:35:23 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/19 11:04:14 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,21 +39,36 @@ void	Commands::modeOperator(std::map<int, t_clientInfo*>::iterator client, char 
 	if (mod == '+')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
-		if (Channels::isInChannel(chan->first, args[0]))
+		if (ChannelCommands::findUser(channel, args[0]) == ChannelCommands::channelUserEnd(channel))
 		{
-			std::cout << "OP HERE" << std::endl;
+			Utils::Send(client->first, std::string(":127.0.0.1 401 " + client->second->nickname + " " + args[0] + " :No such nick/channel\r\n"));	
+			return ;
 		}
+		if (!Channels::isInChannel(chan->first, args[0]))
+		{
+			Utils::Send(client->first, std::string(":127.0.0.1 441 " + client->second->nickname + " " + args[0] + " :They aren't on that channel\r\n"));	
+			return ;
+		}
+		(*ChannelCommands::findUser(channel, args[0])).second = true;
 		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " +o " + args[0] + "\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " +o " + args[0] + "\r\n"));
+		std::cout << "MODE USER OPPED HERE FR:" << ChannelCommands::findUser(channel, args[0])->second << std::endl;
 		args.erase(args.begin());
 	}
 	if (mod == '-')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
-		if (Channels::isInChannel(chan->first, args[0]))
+		if (ChannelCommands::findUser(channel, args[0]) == ChannelCommands::channelUserEnd(channel))
 		{
-			std::cout << "DEOP HERE" << std::endl;
+			Utils::Send(client->first, std::string(":127.0.0.1 401 " + client->second->nickname + " " + args[0] + " :No such nick/channel\r\n"));	
+			return ;
 		}
+		if (!Channels::isInChannel(chan->first, args[0]))
+		{
+			Utils::Send(client->first, std::string(":127.0.0.1 441 " + client->second->nickname + " " + args[0] + " :They aren't on that channel\r\n"));	
+			return ;
+		}
+		(*ChannelCommands::findUser(channel, args[0])).second = false;
 		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " -o " + args[0] + "\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " -o " + args[0] + "\r\n"));
 		args.erase(args.begin());
@@ -151,13 +166,13 @@ void	parseArgs(std::vector<std::string> &args, std::map<int, t_clientInfo*>::ite
 	{
 		if (it->first == "o")
 			Commands::modeOperator(client, it->second, channel, args);
-		if (it->first == "k")
+		else if (it->first == "k")
 			Commands::modeKeypass(client, it->second, channel, args);
-		if (it->first == "l")
+		else if (it->first == "l")
 			Commands::modeUserLimit(client, it->second, channel, args);
-		if (it->first == "t")
+		else if (it->first == "t")
 			Commands::modeTopicAccess(client, it->second, channel, args);
-		if (it->first == "i")
+		else if (it->first == "i")
 			Commands::modeInviteOnly(client, it->second, channel, args);
 		else
 			Utils::Send(client->first, std::string(":127.0.0.1 472 " + client->second->nickname + " " + it->first + " :is unknown mode char to me\r\n"));	
@@ -171,13 +186,21 @@ void	Commands::returnModeInfo(std::string channel, std::map<int, t_clientInfo*>:
 	std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 
 	if (chan->second->password.size())
-		curMods += "k";
+	{
+		curMods += "k ";
+		curMods += chan->second->password;
+	}
 	if (chan->second->isInviteOnly)
 		curMods += "i";
 	if (chan->second->isTopicOPOnly)
 		curMods += "t";
 	if (chan->second->limit)
-		curMods += "l";
+	{
+		std::stringstream	funkyItoa;
+		funkyItoa << chan->second->limit;
+		curMods += "l ";
+		curMods += funkyItoa.str();
+	}
 	Utils::Send(client->first, std::string(":127.0.0.1 324 " + client->second->nickname + " #" + channel + " " + curMods + "\r\n"));
 }
 

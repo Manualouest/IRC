@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 10:42:07 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/18 11:16:17 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/19 10:36:39 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,16 +90,16 @@ bool	ChannelCommands::isUserOp(const std::string &channel, const std::string &us
 	return (false);
 }
 
-std::map<t_clientInfo*, bool>::const_iterator	ChannelCommands::findUser(const std::string &channel, const std::string &user)
+std::map<t_clientInfo*, bool>::iterator	ChannelCommands::findUser(const std::string &channel, const std::string &user)
 {
 	std::map<t_clientInfo *, bool> channelUsers = _channels.find(channel)->second->users;
-	for (std::map<t_clientInfo*, bool>::const_iterator it = channelUsers.begin(); it != channelUsers.end(); ++it)
+	for (std::map<t_clientInfo*, bool>::iterator it = channelUsers.begin(); it != channelUsers.end(); ++it)
 		if (it->first->nickname == user)
 			return (it);
 	return (channelUserEnd(channel));
 }
 
-std::map<t_clientInfo*, bool>::const_iterator	ChannelCommands::channelUserEnd(const std::string &channel)
+std::map<t_clientInfo*, bool>::iterator	ChannelCommands::channelUserEnd(const std::string &channel)
 {
 	return (_channels.find(channel)->second->users.end());
 }
