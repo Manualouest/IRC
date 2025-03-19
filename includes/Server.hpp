@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 17:24:52 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/11 14:22:53 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/17 11:29:26 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@
 #define MAX_EVENTS 10
 #define BUFFER_SIZE 1024
 #define MAX_CLIENT 10
-#define CMDSNAME (std::string[5]){"PASS ", "NICK ", "USER ",  "JOIN ", "WHO"}
+#define CMDSNAME (std::string[8]){"PASS ", "NICK ", "USER ",  "JOIN ", "PRIVMSG ", "PART ", "QUIT ", "INVITE "}
 
 class Server
 {
 	public:
 		static void	ft_IRC(const int &port, const std::string &pass);
+		static int	_findUser(const std::string &name);
 
 	private:
 		Server();
@@ -35,6 +36,7 @@ class Server
 		static void			_execCmd(std::map<int, t_clientInfo*>::iterator client);
 		static void			_cleanstop(const int &extraFd, const std::string &error);
 		static void			_shutdown(int signal);
+		static void			_delUser(t_clientInfo *user);
 		
 		static std::map<int, t_clientInfo*>				_clients;
 		static int										_socketFd;
@@ -56,4 +58,6 @@ class Server
 				std::string	_error;
 		};
 
+		class Channels : public ChannelCommands
+		{};
 };

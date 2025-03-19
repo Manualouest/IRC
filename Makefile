@@ -5,9 +5,17 @@ INCLUDES = -Iincludes/
 FLAGS = -g -Werror -Wall -Wextra -std=c++98
 
 SRC = src/Server.cpp\
-		src/Commands.cpp\
 		src/ChannelCommands.cpp\
-		src/Utils.cpp
+		src/Utils.cpp\
+		src/Commands/Join.cpp\
+		src/Commands/User.cpp\
+		src/Commands/Pass.cpp\
+		src/Commands/Nick.cpp\
+		src/Commands/Utils.cpp\
+		src/Commands/Privmsg.cpp\
+		src/Commands/Part.cpp\
+		src/Commands/Quit.cpp\
+		src/Commands/Invite.cpp
 
 OBJ = $(addprefix obj/, $(SRC:.cpp=.o))
 

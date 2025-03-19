@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/11 08:38:03 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/17 09:52:14 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	Server::ft_IRC(const int &port, const std::string &pass)
 	std::map<int, t_clientInfo*>::iterator	client;
 
 	signal(SIGINT, Server::_shutdown);
-	_pass = pass + "\r\n";
+	_pass = pass;
 	_init(port);
 
 	std::cout << "Server is starting" << std::endl;
@@ -121,6 +121,8 @@ void	Server::_cleanstop(const int &extraFd, const std::string &error)
 		delete it->second;
 		close(it->first);
 	}
+	for (std::map<std::string, t_channelInfo*>::const_iterator it = Channels::begin(); it != Channels::end(); ++it)
+		delete it->second;
 	if (extraFd > 0)
 		close (extraFd);
 	if (_socketFd > 0)
@@ -145,17 +147,42 @@ t_clientInfo	*Server::_initClient(const int &clientFd)
 	return (client);
 }
 
+void	filltoken(t_cmdtoken &token, const std::string &cmd)
+{
+	token.cmd = cmd.substr(0, cmd.find_first_of(' ') + 1);
+	token.target = "";
+	if (!strcmp(token.cmd.c_str(), "JOIN ") || !strcmp(token.cmd.c_str(), "MODE ") || !strcmp(token.cmd.c_str(), "KICK ") || !strcmp(token.cmd.c_str(), "PRIVMSG ")
+		 || !strcmp(token.cmd.c_str(), "PART "))
+		token.target = cmd.substr(token.cmd.length(), cmd.find_first_of(" \r\n", token.cmd.length()) - token.cmd.length());
+	token.args.clear();
+	std::string			lineArg;
+	std::stringstream	rawString(&cmd.c_str()[token.cmd.length() + token.target.length() + !token.target.empty()]);
+	std::cout << "cmd: " << token.cmd << ": ";
+	while (std::getline(rawString, lineArg, ' '))
+	{
+		if (lineArg[0] == ':')
+			lineArg.append(cmd.substr(cmd.find(lineArg) + lineArg.length(), cmd.length()));
+		std::cout << "arg: " << lineArg << "; ";
+		lineArg = lineArg.substr(0, std::min(lineArg.length(), lineArg.find_first_of("\r\n\0") - 1));
+		token.args.push_back(lineArg);
+		if (lineArg[0] == ':')
+			break ;
+	}
+	std::cout << std::endl;
+}
+
 void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 {
 	while (!client->second->cmd.empty())
 	{
-		std::cout << "in: " << client->second->cmd.find_first_of("\r\n") << ", " << client->second->cmd.length() - 2 << ", " << client->second->cmd;
+		// std::cout << "in: " << client->second->cmd.find_first_of("\r\n") << ", " << client->second->cmd.length() - 2 << ", " << client->second->cmd;
 		std::string	cmd = client->second->cmd.substr(0, client->second->cmd.find_first_of("\r\n"));
+		filltoken(client->second->cmdtoken, cmd);
 		std::cout << "exec: '''" << cmd << std::endl << "'''" << std::endl;
 		int	func = 0;
-		for (; func < 4; ++func)
+		for (; func < 8; ++func)
 		{
-			if (CMDSNAME[func] == cmd.substr(0, cmd.find_first_of(' ') + 1))
+			if (CMDSNAME[func] == client->second->cmdtoken.cmd)
 				break ;
 		}
 		switch (func)
@@ -173,7 +200,16 @@ void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 				Commands::join(client);
 				break;
 			case 4:
-
+				Commands::privmsg(client, _findUser);
+				break;
+			case 5:
+				Commands::part(client);
+				break;
+			case 6:
+				Commands::quit(client, _delUser);
+				return;
+			case 7:
+				Commands::invite(client);
 				break;
 			default:
 				std::cout << "erm idk what that is" << std::endl;
@@ -209,6 +245,21 @@ const char *Server::IrcFailException::what() const throw()
 	if (!_error.empty())
 		return (_error.c_str());
 	return ("An error has occured.");
+}
+
+int	Server::_findUser(const std::string &name)
+{
+	for (std::map<int, t_clientInfo*>::iterator	client = _clients.begin(); client != _clients.end(); ++client)
+		if (client->second->nickname == name)
+			return (client->first);
+	return (-1);
+}
+
+void	Server::_delUser(t_clientInfo *user)
+{
+	_clients.erase(user->fd);
+	close(user->fd);
+	delete user;
 }
 
 int	main(int argc, char **argv)

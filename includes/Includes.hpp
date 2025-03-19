@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Includes.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:13:23 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/11 08:50:42 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/17 13:22:12 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <map>
+#include <set>
 #include <csignal>
 #include <sys/epoll.h>
 #include <arpa/inet.h>
@@ -21,6 +22,15 @@
 #include <string>
 #include <cerrno>
 #include <cstdlib>
+#include <vector>
+#include <sstream>
+
+typedef struct s_cmdtoken
+{
+	std::string					cmd;
+	std::string					target;
+	std::vector<std::string>	args;
+}								t_cmdtoken;
 
 typedef struct	s_clientInfo
 {
@@ -31,6 +41,7 @@ typedef struct	s_clientInfo
 	bool		logged;
 	bool		passed;
 	std::string	cmd;
+	t_cmdtoken	cmdtoken;
 }				t_clientInfo;
 
 typedef struct	s_channelInfo
@@ -40,6 +51,7 @@ typedef struct	s_channelInfo
 	int								options[5];
 	std::string						topic;
 	std::string						password;
+	std::set<std::string>			invite;
 }								t_channelInfo;
 
 class Utils
