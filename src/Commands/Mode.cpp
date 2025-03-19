@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 10:41:35 by mbatty            #+#    #+#             */
-/*   Updated: 2025/03/18 12:57:21 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/19 09:35:23 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	Commands::modeOperator(std::map<int, t_clientInfo*>::iterator client, char 
 		{
 			std::cout << "OP HERE" << std::endl;
 		}
+		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " +o " + args[0] + "\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " +o " + args[0] + "\r\n"));
 		args.erase(args.begin());
 	}
@@ -53,6 +54,7 @@ void	Commands::modeOperator(std::map<int, t_clientInfo*>::iterator client, char 
 		{
 			std::cout << "DEOP HERE" << std::endl;
 		}
+		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " -o " + args[0] + "\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " -o " + args[0] + "\r\n"));
 		args.erase(args.begin());
 	}
@@ -66,6 +68,7 @@ void	Commands::modeKeypass(std::map<int, t_clientInfo*>::iterator client, char m
 			return ;
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 		chan->second->password = args[0];
+		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " +k " + args[0] + "\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " +k " + args[0] + "\r\n"));
 		args.erase(args.begin());
 	}
@@ -73,6 +76,7 @@ void	Commands::modeKeypass(std::map<int, t_clientInfo*>::iterator client, char m
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 		chan->second->password = "";
+		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " -k\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " -k\r\n"));
 	}
 }
@@ -85,6 +89,7 @@ void	Commands::modeUserLimit(std::map<int, t_clientInfo*>::iterator client, char
 			return ;
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 		chan->second->limit = std::atoi(args[0].c_str());
+		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " +l " + args[0] + "\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " +l " + args[0] + "\r\n"));
 		args.erase(args.begin());
 	}
@@ -92,6 +97,7 @@ void	Commands::modeUserLimit(std::map<int, t_clientInfo*>::iterator client, char
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 		chan->second->limit = 0;
+		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " -l\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " -l\r\n"));
 	}
 }
@@ -103,12 +109,14 @@ void	Commands::modeTopicAccess(std::map<int, t_clientInfo*>::iterator client, ch
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 		chan->second->isTopicOPOnly = true;
+		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " +t\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " +t\r\n"));
 	}
 	if (mod == '-')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 		chan->second->isTopicOPOnly = false;
+		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " -t\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " -t\r\n"));
 	}
 }
@@ -120,12 +128,14 @@ void	Commands::modeInviteOnly(std::map<int, t_clientInfo*>::iterator client, cha
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 		chan->second->isInviteOnly = true;
+		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " +i\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " +i\r\n"));
 	}
 	if (mod == '-')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 		chan->second->isInviteOnly = false;
+		ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " -i\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " -i\r\n"));
 	}
 }
@@ -149,6 +159,8 @@ void	parseArgs(std::vector<std::string> &args, std::map<int, t_clientInfo*>::ite
 			Commands::modeTopicAccess(client, it->second, channel, args);
 		if (it->first == "i")
 			Commands::modeInviteOnly(client, it->second, channel, args);
+		else
+			Utils::Send(client->first, std::string(":127.0.0.1 472 " + client->second->nickname + " " + it->first + " :is unknown mode char to me\r\n"));	
 	}
 }
 

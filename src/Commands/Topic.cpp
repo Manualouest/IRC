@@ -6,7 +6,7 @@
 /*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 10:57:35 by mbatty            #+#    #+#             */
-/*   Updated: 2025/03/18 13:05:27 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/19 09:25:26 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 void Commands::topic(std::map<int, t_clientInfo*>::iterator client)
 {
+	if (!checks(client, NOTLOG | NOTARG | BADCHN))
+		return ;
+
 	std::vector<std::string>	args = client->second->cmdtoken.args;
 	std::string					channel = client->second->cmdtoken.target.substr(1);
 	std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
