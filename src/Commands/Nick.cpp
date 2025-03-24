@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:27:01 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/13 18:26:52 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/24 12:48:51 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,5 +18,13 @@ void	Commands::nick(std::map<int, t_clientInfo*>::iterator client)
 	if (!checks(client, NOARGS | NOPASS))
 		return ;
 
-	client->second->nickname = client->second->cmdtoken.args[0];
+	if (Server::_findUser(client->second->cmdtoken.args[0]) == -1)
+	{
+		Utils::Send(client->first, std::string(":" + client->second->nickname + " NICK :" + client->second->cmdtoken.args[0] + "\r\n"));
+		for (std::map<std::string, t_channelInfo*>::const_iterator it = Channels::begin(); it != Channels::end(); it++)
+			Channels::sendMsg(it->first, client->second->nickname, std::string(":" + client->second->nickname + " NICK " + client->second->cmdtoken.args[0] + "\r\n"));
+		client->second->nickname = client->second->cmdtoken.args[0];
+	}
+	else
+		Utils::Send(client->first, std::string(":127.0.0.1 433 " + client->second->nickname + " " + client->second->cmdtoken.args[0] + " :Nickname is already in use\r\n"));
 }
