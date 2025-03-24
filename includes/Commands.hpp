@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:12:12 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/19 10:54:00 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/20 12:04:47 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class Commands
 
 		static void	privmsgChannel(std::map<int, t_clientInfo*>::iterator client);
 		static void	privmsgUser(std::map<int, t_clientInfo*>::iterator client);
+		static void	tryJoin(std::map<int, t_clientInfo*>::iterator client, const std::string &channel);
 		static void	parseArgs(std::vector<std::string> &args, std::map<int, t_clientInfo*>::iterator client, std::string channel);
 		static void	modeOperator(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
 		static void	modeKeypass(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);

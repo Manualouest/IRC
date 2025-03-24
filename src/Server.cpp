@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/19 10:52:26 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/20 12:48:08 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,13 @@ void	Server::_init(const int &port)
 	if (_socketFd == -1)
 		_cleanstop(0, std::string("socket error: ") + std::string(strerror(errno)));
 	_socket.sin_family = AF_INET;
-	_socket.sin_addr.s_addr = inet_addr("127.0.0.1");
+	_socket.sin_addr.s_addr = INADDR_ANY;
 	_socket.sin_port = htons(port);
+	int yes = 1;
+	if (fcntl(_socketFd, F_SETFL, O_NONBLOCK) == -1)
+		_cleanstop(0, std::string("fcntl error: ") + std::string(strerror(errno)));
+	if (setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
+		_cleanstop(0, std::string("setsockopt error: ") + std::string(strerror(errno)));
 	if (bind(_socketFd, (struct sockaddr *)&_socket, sizeof(_socket)) < 0)
 		_cleanstop(0, std::string("bind error: ") + std::string(strerror(errno)));
 	if(listen(_socketFd, MAX_CLIENT) < 0)
@@ -152,7 +157,7 @@ void	filltoken(t_cmdtoken &token, const std::string &cmd)
 	token.cmd = cmd.substr(0, cmd.find_first_of(' ') + 1);
 	token.target = "";
 	if (!strcmp(token.cmd.c_str(), "JOIN ") || !strcmp(token.cmd.c_str(), "MODE ") || !strcmp(token.cmd.c_str(), "KICK ") || !strcmp(token.cmd.c_str(), "PRIVMSG ")
-		 || !strcmp(token.cmd.c_str(), "PART "))
+		 || !strcmp(token.cmd.c_str(), "PART ") || !strcmp(token.cmd.c_str(), "TOPIC "))
 		token.target = cmd.substr(token.cmd.length(), cmd.find_first_of(" \r\n", token.cmd.length()) - token.cmd.length());
 	token.args.clear();
 	if (token.cmd.length() + token.target.length() + !token.target.empty() >= cmd.length())

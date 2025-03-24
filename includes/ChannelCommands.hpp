@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 10:39:01 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/19 14:17:57 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/20 12:39:45 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,9 @@ class ChannelCommands
 		static bool	isUserOp(const std::string &channel, const std::string &user);
 		static void	opUser(const std::string &channel, const std::string &user);
 		static void	dopUser(const std::string &channel, const std::string &user);
+		static bool	isNickEq(std::pair<s_clientInfo *const, bool> client);
+		static bool	isSpace(const std::string &channel);
 
-		static bool														isNickEq(std::pair<s_clientInfo *const, bool> client);
 		static std::map<t_clientInfo*, bool>::iterator					findUser(const std::string &channel, const std::string &nickname);
 		static std::map<t_clientInfo*, bool>::iterator					channelUserEnd(const std::string &channel);
 		static std::map<std::string, t_channelInfo*>::const_iterator	find(const std::string &channel);

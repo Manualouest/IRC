@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 10:42:07 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/19 14:46:22 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/20 12:40:06 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,14 @@ bool	ChannelCommands::isNickEq(std::pair<s_clientInfo *const, bool> client)
 {
 	return (client.first->nickname == _searchnick);
 }
+
+bool ChannelCommands::isSpace(const std::string &channel)
+{
+	if (_channels.find(channel)->second->limit == 0)
+		return (true);
+	return (_channels.find(channel)->second->limit - _channels.find(channel)->second->users.size() > 0);
+}
+
 
 std::map<t_clientInfo*, bool>::iterator	ChannelCommands::findUser(const std::string &channel, const std::string &user)
 {

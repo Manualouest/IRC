@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:13:23 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/19 14:17:28 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/19 16:05:20 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <csignal>
 #include <sys/epoll.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include <cstring>
 #include <string>
 #include <cerrno>
