@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:12:12 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/20 12:04:47 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/25 10:05:38 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ class Commands
 		static void	modeOperator(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
 		static void	modeKeypass(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
 		static void	modeUserLimit(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
-		static void	modeTopicAccess(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
-		static void	modeInviteOnly(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args);
+		static void	modeTopicAccess(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel);
+		static void	modeInviteOnly(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel);
 		static void	returnModeInfo(std::string channel, std::map<int, t_clientInfo*>::iterator client);
 		
 		class Channels : public ChannelCommands

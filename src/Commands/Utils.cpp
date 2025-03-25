@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:27:42 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/18 14:14:41 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/25 09:47:09 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ bool	Commands::checks(std::map<int, t_clientInfo*>::iterator client, int choice)
 	}
 	if (choice & BADCHN && client->second->cmdtoken.target[0] != '#')
 	{
-		Utils::Send(client->first, BADCHANNAME(client->second->nickname));
+		Utils::Send(client->first, BADCHANNAME(client->second->nickname, client->second->cmdtoken.target));
 		return (false);
 	}
 	return (true);

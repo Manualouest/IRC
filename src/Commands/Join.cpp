@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:27:04 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/20 12:34:25 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/25 09:51:59 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,18 @@ void	Commands::tryJoin(std::map<int, t_clientInfo*>::iterator client, const std:
 {
 	if (!Channels::isSpace(channel))
 	{
-		// err msg
+		Utils::Send(client->first, ERRMODEL(client->second->nickname, channel));
 		return ;
+	}
+	if (!Channels::find(channel)->second->password.empty())
+	{
+		if (!checks(client, NOARGS))
+			return ;
+		if (strcmp(Channels::find(channel)->second->password.c_str(), client->second->cmdtoken.args[0].c_str()))
+		{
+			Utils::Send(client->first, ERRMODEK(client->second->nickname, channel));
+			return ;
+		}
 	}
 	if (Channels::find(channel)->second->isInviteOnly)
 	{
@@ -25,17 +35,7 @@ void	Commands::tryJoin(std::map<int, t_clientInfo*>::iterator client, const std:
 			Channels::find(channel)->second->invite.erase(client->second->nickname);
 		else
 		{
-			// err msg
-			return ;
-		}
-	}
-	if (!Channels::find(channel)->second->password.empty())
-	{
-		if (!checks(client, NOARGS))
-			return;
-		if (strcmp(Channels::find(channel)->second->password.c_str(), client->second->cmdtoken.args[0].c_str()))
-		{
-			// err msg
+			Utils::Send(client->first, ERRMODEI(client->second->nickname, channel));
 			return ;
 		}
 	}
@@ -55,7 +55,7 @@ void	Commands::join(std::map<int, t_clientInfo*>::iterator client)
 	if (Channels::isChannelReal(channel))
 	{
 		if (Channels::isInChannel(channel, client->second->nickname))
-			Utils::Send(client->first, ALRINCHAN(client->second->nickname));
+			Utils::Send(client->first, ALRINCHAN(client->second->nickname, client->second->nickname, channel));
 		else
 			tryJoin(client, channel);
 	}

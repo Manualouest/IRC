@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 10:41:35 by mbatty            #+#    #+#             */
-/*   Updated: 2025/03/19 14:46:17 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/25 10:12:44 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,12 @@ void	Commands::modeOperator(std::map<int, t_clientInfo*>::iterator client, char 
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 		if (Channels::findUser(channel, args[0]) == Channels::channelUserEnd(channel))
 		{
-			Utils::Send(client->first, std::string(":127.0.0.1 401 " + client->second->nickname + " " + args[0] + " :No such nick/channel\r\n"));	
+			Utils::Send(client->first, NOSUCHNICKCHAN(client->second->nickname, args[0]));	
 			return ;
 		}
 		if (!Channels::isInChannel(chan->first, args[0]))
 		{
-			Utils::Send(client->first, std::string(":127.0.0.1 441 " + client->second->nickname + " " + args[0] + " :They aren't on that channel\r\n"));	
+			Utils::Send(client->first, USERNOTINCHANNEL(client->second->nickname, args[0]));	
 			return ;
 		}
 		Channels::opUser(channel, args[0]);
@@ -59,12 +59,12 @@ void	Commands::modeOperator(std::map<int, t_clientInfo*>::iterator client, char 
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 		if (Channels::findUser(channel, args[0]) == Channels::channelUserEnd(channel))
 		{
-			Utils::Send(client->first, std::string(":127.0.0.1 401 " + client->second->nickname + " " + args[0] + " :No such nick/channel\r\n"));	
+			Utils::Send(client->first, NOSUCHNICKCHAN(client->second->nickname, args[0]));	
 			return ;
 		}
 		if (!Channels::isInChannel(chan->first, args[0]))
 		{
-			Utils::Send(client->first, std::string(":127.0.0.1 441 " + client->second->nickname + " " + args[0] + " :They aren't on that channel\r\n"));	
+			Utils::Send(client->first, USERNOTINCHANNEL(client->second->nickname, args[0]));
 			return ;
 		}
 		Channels::dopUser(channel, args[0]);
@@ -116,9 +116,8 @@ void	Commands::modeUserLimit(std::map<int, t_clientInfo*>::iterator client, char
 	}
 }
 
-void	Commands::modeTopicAccess(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args)
+void	Commands::modeTopicAccess(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel)
 {
-	(void)args;
 	if (mod == '+')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
@@ -135,9 +134,8 @@ void	Commands::modeTopicAccess(std::map<int, t_clientInfo*>::iterator client, ch
 	}
 }
 
-void	Commands::modeInviteOnly(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel, std::vector<std::string> &args)
+void	Commands::modeInviteOnly(std::map<int, t_clientInfo*>::iterator client, char mod, std::string channel)
 {
-	(void)args;
 	if (mod == '+')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
@@ -159,7 +157,6 @@ void	Commands::parseArgs(std::vector<std::string> &args, std::map<int, t_clientI
 	std::map<std::string, char>	flags = modeGetFlags(args[0]);
 	args.erase(args.begin());
 	std::map<std::string, char>::iterator it;
-	(void)client;
 
 	for (it = flags.begin(); it != flags.end(); it++)
 	{
@@ -170,11 +167,11 @@ void	Commands::parseArgs(std::vector<std::string> &args, std::map<int, t_clientI
 		else if (it->first == "l")
 			Commands::modeUserLimit(client, it->second, channel, args);
 		else if (it->first == "t")
-			Commands::modeTopicAccess(client, it->second, channel, args);
+			Commands::modeTopicAccess(client, it->second, channel);
 		else if (it->first == "i")
-			Commands::modeInviteOnly(client, it->second, channel, args);
+			Commands::modeInviteOnly(client, it->second, channel);
 		else
-			Utils::Send(client->first, std::string(":127.0.0.1 472 " + client->second->nickname + " " + it->first + " :is unknown mode char to me\r\n"));	
+			Utils::Send(client->first, ERRMODEUNKNOW(client->second->nickname, it->first));	
 	}
 }
 
@@ -212,7 +209,7 @@ void Commands::mode(std::map<int, t_clientInfo*>::iterator client)
 	{
 		if (!Channels::isUserOp(channel, client->second->nickname))
 		{
-			Utils::Send(client->first, std::string(":127.0.0.1 482 " + client->second->nickname + " :You are not channel operator\r\n"));	
+			Utils::Send(client->first, NOTOPERATOR(client->second->nickname, channel));
 			return ;
 		}
 		if (!args.size())
@@ -223,5 +220,5 @@ void Commands::mode(std::map<int, t_clientInfo*>::iterator client)
 		parseArgs(args, client, channel);
 	}
 	else
-		Utils::Send(client->first, std::string(":127.0.0.1 403 " + client->second->nickname + " :Channel does not exist\r\n"));	
+		Utils::Send(client->first, CHANNOTREAL(client->second->nickname, channel));	
 }
