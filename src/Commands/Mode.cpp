@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 10:41:35 by mbatty            #+#    #+#             */
-/*   Updated: 2025/03/25 10:12:44 by derey            ###   ########.fr       */
+/*   Updated: 2025/03/25 11:06:37 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ void	Commands::modeKeypass(std::map<int, t_clientInfo*>::iterator client, char m
 	if (mod == '-')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
+		if (!chan->second->password.size())
+			return ;
 		chan->second->password = "";
 		Channels::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " -k\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " -k\r\n"));
@@ -110,6 +112,8 @@ void	Commands::modeUserLimit(std::map<int, t_clientInfo*>::iterator client, char
 	if (mod == '-')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
+		if (!chan->second->limit)
+			return ;
 		chan->second->limit = 0;
 		Channels::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " -l\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " -l\r\n"));
@@ -121,6 +125,8 @@ void	Commands::modeTopicAccess(std::map<int, t_clientInfo*>::iterator client, ch
 	if (mod == '+')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
+		if (chan->second->isTopicOPOnly)
+			return ;
 		chan->second->isTopicOPOnly = true;
 		Channels::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " +t\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " +t\r\n"));
@@ -128,6 +134,8 @@ void	Commands::modeTopicAccess(std::map<int, t_clientInfo*>::iterator client, ch
 	if (mod == '-')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
+		if (!chan->second->isTopicOPOnly)
+			return ;
 		chan->second->isTopicOPOnly = false;
 		Channels::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " -t\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " -t\r\n"));
@@ -139,6 +147,8 @@ void	Commands::modeInviteOnly(std::map<int, t_clientInfo*>::iterator client, cha
 	if (mod == '+')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
+		if (chan->second->isInviteOnly)
+			return ;
 		chan->second->isInviteOnly = true;
 		Channels::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " +i\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " +i\r\n"));
@@ -146,6 +156,8 @@ void	Commands::modeInviteOnly(std::map<int, t_clientInfo*>::iterator client, cha
 	if (mod == '-')
 	{
 		std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
+		if (!chan->second->isInviteOnly)
+			return ;
 		chan->second->isInviteOnly = false;
 		Channels::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " MODE #" + channel + " -i\r\n"));
 		Utils::Send(client->first, std::string(":" + client->second->nickname + " MODE #" + channel + " -i\r\n"));
@@ -179,25 +191,28 @@ void	Commands::returnModeInfo(std::string channel, std::map<int, t_clientInfo*>:
 {
 	std::cout << "Sending channel info back" << std::endl;
 	std::string	curMods = "+";
+	std::string	curModsContents = "";
 	std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
 
 	if (chan->second->password.size())
 	{
-		curMods += "k ";
-		curMods += chan->second->password;
+		curMods += "k";
+		curModsContents += chan->second->password;
+	}
+	if (chan->second->limit)
+	{
+		std::stringstream	funkyItoa;
+		funkyItoa << chan->second->limit;
+		curMods += "l";
+		if (curModsContents.size())
+			curModsContents += " ";
+		curModsContents += funkyItoa.str();
 	}
 	if (chan->second->isInviteOnly)
 		curMods += "i";
 	if (chan->second->isTopicOPOnly)
 		curMods += "t";
-	if (chan->second->limit)
-	{
-		std::stringstream	funkyItoa;
-		funkyItoa << chan->second->limit;
-		curMods += "l ";
-		curMods += funkyItoa.str();
-	}
-	Utils::Send(client->first, std::string(":127.0.0.1 324 " + client->second->nickname + " #" + channel + " " + curMods + "\r\n"));
+	Utils::Send(client->first, std::string(":127.0.0.1 324 " + client->second->nickname + " #" + channel + " " + curMods + " " + curModsContents + "\r\n"));
 }
 
 void Commands::mode(std::map<int, t_clientInfo*>::iterator client)
