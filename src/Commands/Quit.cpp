@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 09:16:08 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/19 10:53:28 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/03/31 15:34:47 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 void	Commands::quit(std::map<int, t_clientInfo*>::iterator client)
 {
 	if (!checks(client, NOTLOG | NOARGS))
+	{
+		Server::_delUser(client->second);
 		return ;
+	}
 
 	std::map<int, int>	others;
 	for (std::map<std::string, t_channelInfo*>::const_iterator channelIt = Channels::begin(); channelIt != Channels::end(); ++channelIt)
