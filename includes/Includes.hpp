@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Includes.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:13:23 by mbirou            #+#    #+#             */
-/*   Updated: 2025/04/01 13:34:18 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/01 15:29:22 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@
 #define NAMESTART(nick, channel) std::string(":127.0.0.1 353 " + (nick.empty() ? "*" : nick) + " = #" + channel + " :")
 #define NAMELIST(client) std::string((client->second ? " @" : " ") + client->first->nickname)
 #define NAMEEND(nick, channel) std::string("\r\n:127.0.0.1 366 " + (nick.empty() ? "*" : nick) + " #" + channel + " :End of /NAMES list\r\n")
+#define HASKICKED(nick, channel, user, arg) std::string((nick.empty() ? "*" : nick) + " has kicked " + user + " from #" + channel + " (" + arg + ")\r\n")
+#define BEENKICKED(nick, channel, arg) std::string("You have been kicked from #" + channel + " by " + nick + " (" + arg + ")\r\n")
+#define USERKICK(nick, channel, user, arg) std::string(":" + (nick.empty() ? "*" : nick) + " KICK #" + channel + " " + user + " :" + arg + "\r\n")
 
 typedef struct s_cmdtoken
 {

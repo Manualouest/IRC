@@ -6,7 +6,7 @@
 /*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:12:12 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/25 10:05:38 by derey            ###   ########.fr       */
+/*   Updated: 2025/04/01 13:53:14 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class Commands
 		static void	mode(std::map<int, t_clientInfo*>::iterator client);
 		static void topic(std::map<int, t_clientInfo*>::iterator client);
 		static void invite(std::map<int, t_clientInfo*>::iterator client);
+		static void kick(std::map<int, t_clientInfo*>::iterator client);
 
 	private:
 		Commands();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/04/01 13:34:40 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/01 13:56:07 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 		filltoken(client->second->cmdtoken, cmd);
 		std::cout << "exec: '''" << cmd << std::endl << "'''" << std::endl;
 		int	func = 0;
-		for (; func < 10; ++func)
+		for (; func < 11; ++func)
 		{
 			if (CMDSNAME[func] == client->second->cmdtoken.cmd)
 				break ;
@@ -222,6 +222,9 @@ void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 				return ;
 			case 9:
 				Commands::invite(client);
+				break;
+			case 10:
+				Commands::kick(client);
 				break;
 			default:
 				std::cout << "erm idk what that is" << std::endl;

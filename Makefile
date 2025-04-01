@@ -17,7 +17,8 @@ SRC = src/Server.cpp\
 		src/Commands/Quit.cpp\
 		src/Commands/Mode.cpp\
 		src/Commands/Invite.cpp\
-		src/Commands/Topic.cpp
+		src/Commands/Topic.cpp\
+		src/Commands/Kick.cpp
 
 OBJ = $(addprefix obj/, $(SRC:.cpp=.o))
 
