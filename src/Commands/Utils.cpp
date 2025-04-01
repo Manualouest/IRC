@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:27:42 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/25 09:47:09 by derey            ###   ########.fr       */
+/*   Updated: 2025/04/01 13:28:55 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ bool	Commands::checks(std::map<int, t_clientInfo*>::iterator client, int choice)
 		Utils::Send(client->first, NOPASSGIVEN(client->second->nickname));
 		return (false);
 	}
-	if (choice & NONICK && client->second->nickname == "*")
+	if (choice & NONICK && client->second->nickname == "")
 	{
 		Utils::Send(client->first, NONICKGIVEN(client->second->nickname));
 		return (false);

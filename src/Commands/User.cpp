@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:26:08 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/18 13:13:59 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/01 13:35:56 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,15 @@
 
 void	Commands::user(std::map<int, t_clientInfo*>::iterator client)
 {
-	if (!checks(client, NOPASS | NONICK | NOARGS))
+	if (!checks(client, NOPASS | NOARGS))
 		return ;
+	if (!checks(client, NONICK))
+	{
+		client->second->usertoken.cmd = client->second->cmdtoken.cmd;
+		client->second->usertoken.args = client->second->cmdtoken.args;
+		client->second->usertoken.target = client->second->cmdtoken.target;
+		return ;
+	}
 	if (client->second->cmdtoken.args.size() < 4)
 	{
 		Utils::Send(client->first, NOTENOUGHARGS(client->second->nickname));

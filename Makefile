@@ -37,6 +37,8 @@ $(NAME) : $(OBJ)
 bot: $(BOBJ)
 	c++ $(FLAGS) $(BOBJ) -o bot
 
+bonus: bot
+
 clean:
 	rm -rf obj/
 

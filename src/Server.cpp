@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/04/01 13:12:10 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/01 13:34:40 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,7 @@ t_clientInfo	*Server::_initClient(const int &clientFd)
 	client->nickname = "";
 	client->username = "";
 	client->realname = "";
+	client->usertoken.cmd = "";
 	return (client);
 }
 
