@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:26:04 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/25 09:42:08 by derey            ###   ########.fr       */
+/*   Updated: 2025/04/01 13:45:15 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	Commands::privmsgChannel(std::map<int, t_clientInfo*>::iterator client)
 	if (!Channels::isChannelReal(channel))
 	{
 		Utils::Send(client->first, CHANNOTREAL(client->second->nickname, channel));
-		std::cout << "'" << channel << "'" << std::endl;
 		return ;
 	}
 	if (!Channels::isInChannel(channel, client->second->nickname))
@@ -37,7 +36,6 @@ void	Commands::privmsgUser(std::map<int, t_clientInfo*>::iterator client)
 		Utils::Send(client->first, NOSUCHNICK(client->second->nickname, client->second->cmdtoken.target));
 		return ;
 	}
-	std::cout << std::string(":" + client->second->nickname + " PRIVMSG " + client->second->cmdtoken.target + client->second->cmdtoken.args[0] + "\r\n") << std::endl;
 	Utils::Send(user, PRIVMSG(client->second->nickname, client->second->cmdtoken.target, client->second->cmdtoken.args[0]));
 }
 

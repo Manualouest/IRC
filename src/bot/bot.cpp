@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 10:28:25 by mbatty            #+#    #+#             */
-/*   Updated: 2025/04/01 12:40:44 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/01 14:01:34 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,12 @@ int main(int ac, char **av)
 	signal(SIGINT, stop);
 
 	if (ac != 3)
+	{
 		PRINT RED BOLD "usage: " AND av[0] AND " <erver port> <server password>" CENDL;
+		return (1);
+	}
 	if (!innitConnection(av[1]) || !connectToServ(av[2]))
-		return (-1);
+		return (1);
 	PRINT GRN BOLD "Connected to server." CENDL;
 
 	while (isRunning)
@@ -117,7 +120,6 @@ int main(int ac, char **av)
 		msgRecv = readServer(client_fd);
 		if (!msgRecv.size() || !isRunning)
 			continue;
-		// PRINT PRP AND msgRecv CENDL;
 		if (!std::strncmp("You have been invited to #", msgRecv.c_str(), 26))
 			sendServer("JOIN #" + msgRecv.substr(26, msgRecv.find(" by ", 26) - 26) + "\r\n");
 		else if (msgRecv.find(" PRIVMSG ") != std::string::npos)
@@ -149,5 +151,5 @@ int main(int ac, char **av)
 				sendServer(msgRecv.substr(msgRecv.find("PRIVMSG "), msgRecv.find(":", msgRecv.find("PRIVMSG ")) - msgRecv.find("PRIVMSG ")) + ":pagnan\r\n");
 		}
 	}
-	return 0;
+	return (0);
 }
