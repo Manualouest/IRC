@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Includes.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:13:23 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/25 10:10:01 by derey            ###   ########.fr       */
+/*   Updated: 2025/04/01 13:02:01 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include <spellBook.hpp>
 #include <iostream>
 #include <map>
 #include <csignal>
@@ -33,8 +34,8 @@
 #define NOTONCHAN(nick, channel) std::string(":127.0.0.1 442 " + nick + " #" + channel + " :Not on channel.\r\n")
 #define WRONGPASS(nick) std::string(":127.0.0.1 464 " + nick + " :Password is incorect\r\n")
 #define CANTSENDTOCHAN(nick, channel) std::string(":127.0.0.1 404 " + nick + " #" + channel + " :Cannot send to channel.\r\n")
-#define NOSUCHNICK(nick, arg) std::string(":127.0.0.1 401 " + nick + " " + arg + ":This nickname doesn't exist.\r\n")
-#define NOSUCHNICKCHAN(nick, arg) std::string(":127.0.0.1 401 " + nick + " " + arg + ":No such nick/channel.\r\n")
+#define NOSUCHNICK(nick, arg) std::string(":127.0.0.1 401 " + nick + " " + arg + " :This nickname doesn't exist.\r\n")
+#define NOSUCHNICKCHAN(nick, arg) std::string(":127.0.0.1 401 " + nick + " " + arg + " :No such nick/channel.\r\n")
 #define NOTENOUGHARGS(nick) std::string(":127.0.0.1 461 " + nick + " :Not enough arguments given\r\n")
 #define NOPASSGIVEN(nick) std::string(":127.0.0.1 464 " + nick + " :Password was not given\r\n")
 #define NONICKGIVEN(nick) std::string(":127.0.0.1 431 " + nick + " :Please enter a nickname\r\n")

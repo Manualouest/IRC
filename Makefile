@@ -21,6 +21,10 @@ SRC = src/Server.cpp\
 
 OBJ = $(addprefix obj/, $(SRC:.cpp=.o))
 
+BSRC = src/bot/bot.cpp
+
+BOBJ = $(addprefix obj/, $(BSRC:.cpp=.o))
+
 obj/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	c++ $(FLAGS) $(INCLUDES) $< -c -o $@
@@ -30,10 +34,14 @@ all: $(NAME)
 $(NAME) : $(OBJ)
 	c++ $(FLAGS) $(INCLUDES) $(OBJ) -o $(NAME)
 
+bot: $(BOBJ)
+	c++ $(FLAGS) $(BOBJ) -o bot
+
 clean:
 	rm -rf obj/
 
 fclean: clean
 	rm -rf $(NAME)
+	rm -rf bot
 
 re: fclean all

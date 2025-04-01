@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 09:16:08 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/19 10:53:28 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/01 13:04:29 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 void	Commands::quit(std::map<int, t_clientInfo*>::iterator client)
 {
 	if (!checks(client, NOTLOG | NOARGS))
-		return ;
+ 	{
+ 		Server::_delUser(client->second);
+ 		return ;
+ 	}
 
 	std::map<int, int>	others;
 	for (std::map<std::string, t_channelInfo*>::const_iterator channelIt = Channels::begin(); channelIt != Channels::end(); ++channelIt)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:27:01 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/24 12:48:51 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/03/31 13:59:24 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	Commands::nick(std::map<int, t_clientInfo*>::iterator client)
 
 	if (Server::_findUser(client->second->cmdtoken.args[0]) == -1)
 	{
-		Utils::Send(client->first, std::string(":" + client->second->nickname + " NICK :" + client->second->cmdtoken.args[0] + "\r\n"));
+		// Utils::Send(client->first, std::string(":" + client->second->nickname + " NICK :" + client->second->cmdtoken.args[0] + "\r\n"));
 		for (std::map<std::string, t_channelInfo*>::const_iterator it = Channels::begin(); it != Channels::end(); it++)
 			Channels::sendMsg(it->first, client->second->nickname, std::string(":" + client->second->nickname + " NICK " + client->second->cmdtoken.args[0] + "\r\n"));
 		client->second->nickname = client->second->cmdtoken.args[0];

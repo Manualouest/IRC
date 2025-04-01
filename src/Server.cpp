@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/20 12:48:08 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/01 13:03:54 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,10 +109,8 @@ bool	Server::_getCmd(std::map<int, t_clientInfo*>::iterator client)
 		nbRecv = recv(client->first, buffer, sizeof(buffer), MSG_DONTWAIT);
 		if (nbRecv <= 0 || (nbRecv > 1 && buffer[nbRecv - 1] == '\n' && buffer[nbRecv - 2] != '\r'))
 		{
-			delete client->second;
-			close(client->first);
-			_clients.erase(client->first);
-			return (false);
+			client->second->cmd = "QUIT :leaving \r\n";
+ 			return (true);
 		}
 		client->second->cmd.append(buffer);
 	} while (nbRecv == BUFFER_SIZE && buffer[nbRecv - 1] != 0 && buffer[nbRecv - 2] != '\r' && buffer[nbRecv - 1] != '\n');
