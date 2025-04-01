@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:27:04 by mbirou            #+#    #+#             */
-/*   Updated: 2025/03/25 09:51:59 by derey            ###   ########.fr       */
+/*   Updated: 2025/04/01 13:44:18 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	Commands::join(std::map<int, t_clientInfo*>::iterator client)
 		return ;
 
 	std::string	channel = client->second->cmdtoken.target.substr(1, client->second->cmdtoken.target.length());
-	std::cout << "''" << channel << "''" << std::endl;
 	if (Channels::isChannelReal(channel))
 	{
 		if (Channels::isInChannel(channel, client->second->nickname))

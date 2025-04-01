@@ -6,15 +6,9 @@
 /*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 13:08:37 by mbirou            #+#    #+#             */
-/*   Updated: 2025/04/01 13:56:07 by derey            ###   ########.fr       */
+/*   Updated: 2025/04/01 15:53:38 by derey            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-/*
-https://www.alien.net.au/irc/irc2numerics.html
-https://modern.ircdocs.horse/#client-to-server-protocol-structure
-*/
-
 
 #include "../includes/Server.hpp"
 
@@ -163,28 +157,23 @@ void	filltoken(t_cmdtoken &token, const std::string &cmd)
 		return ;
 	std::string			lineArg;
 	std::stringstream	rawString(&cmd.c_str()[token.cmd.length() + token.target.length() + !token.target.empty()]);
-	std::cout << "cmd: " << token.cmd << ": ";
 	while (std::getline(rawString, lineArg, ' '))
 	{
 		if (lineArg[0] == ':')
 			lineArg.append(cmd.substr(cmd.find(lineArg) + lineArg.length(), cmd.length()));
-		std::cout << "arg: " << lineArg << "; ";
 		lineArg = lineArg.substr(0, std::min(lineArg.length(), lineArg.find_first_of("\r\n\0") - 1));
 		token.args.push_back(lineArg);
 		if (lineArg[0] == ':')
 			break ;
 	}
-	std::cout << std::endl;
 }
 
 void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 {
 	while (!client->second->cmd.empty())
 	{
-		// std::cout << "in: " << client->second->cmd.find_first_of("\r\n") << ", " << client->second->cmd.length() - 2 << ", " << client->second->cmd;
 		std::string	cmd = client->second->cmd.substr(0, client->second->cmd.find_first_of("\r\n"));
 		filltoken(client->second->cmdtoken, cmd);
-		std::cout << "exec: '''" << cmd << std::endl << "'''" << std::endl;
 		int	func = 0;
 		for (; func < 11; ++func)
 		{
@@ -226,8 +215,6 @@ void	Server::_execCmd(std::map<int, t_clientInfo*>::iterator client)
 			case 10:
 				Commands::kick(client);
 				break;
-			default:
-				std::cout << "erm idk what that is" << std::endl;
 		}
 		if (client->second->cmd.find_first_of("\r\n") == client->second->cmd.length() - 2)
 			client->second->cmd = "";

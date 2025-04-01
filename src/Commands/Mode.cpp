@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 10:41:35 by mbatty            #+#    #+#             */
-/*   Updated: 2025/03/25 11:06:37 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/04/01 14:01:48 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,6 @@ void	Commands::parseArgs(std::vector<std::string> &args, std::map<int, t_clientI
 
 void	Commands::returnModeInfo(std::string channel, std::map<int, t_clientInfo*>::iterator client)
 {
-	std::cout << "Sending channel info back" << std::endl;
 	std::string	curMods = "+";
 	std::string	curModsContents = "";
 	std::map<std::string, t_channelInfo*>::const_iterator chan = Channels::find(channel);
