@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 18:26:04 by mbirou            #+#    #+#             */
-/*   Updated: 2025/04/02 08:43:37 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/02 10:57:44 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	Commands::privmsgChannel(std::map<int, t_clientInfo*>::iterator client)
 {
-	std::string	channel = client->second->cmdtoken.target.substr(client->second->cmdtoken.target[0] == ':', client->second->cmdtoken.target.length());
+	std::string	channel = client->second->cmdtoken.target.substr(1, client->second->cmdtoken.target.length());
 	if (!Channels::isChannelReal(channel))
 	{
 		Utils::Send(client->first, CHANNOTREAL(client->second->nickname, channel));
