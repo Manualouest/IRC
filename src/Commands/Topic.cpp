@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mewen.mewen@hotmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 10:57:35 by mbatty            #+#    #+#             */
-/*   Updated: 2025/03/19 09:25:26 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/04/02 08:45:07 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void Commands::topic(std::map<int, t_clientInfo*>::iterator client)
 				Utils::Send(client->first, std::string(":127.0.0.1 482 " + client->second->nickname + " :You are not channel operator\r\n"));	
 			else
 			{
-				chan->second->topic = args[0].substr(1);
+				chan->second->topic = args[0].substr(args[0][0] == ':');
 				ChannelCommands::sendMsg(channel, client->second->nickname, std::string(":" + client->second->nickname + " TOPIC #" + channel + " :" + chan->second->topic + "\r\n"));
 				Utils::Send(client->first, std::string(":" + client->second->nickname + " TOPIC #" + channel + " :" + chan->second->topic + "\r\n"));
 			}

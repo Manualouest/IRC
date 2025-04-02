@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:13:23 by mbirou            #+#    #+#             */
-/*   Updated: 2025/04/02 08:10:22 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/02 08:42:57 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@
 #define JOINTOPIC(nick, channel, topic) std::string(":" + DOMAINNAME + " 332 " + (nick.empty() ? "*" : nick) + " #" + channel + " :" + topic + "\r\n")
 #define USERPART(nick, channel, reason) std::string(":" + (nick.empty() ? "*" : nick) + " PART " + channel + " " + reason + "\r\n")
 #define PRIVMSG(nick, target, msg) std::string(":" + (nick.empty() ? "*" : nick) + " PRIVMSG " + target + " " + msg + "\r\n")
-#define QUITMSG(nick, reason) std::string(":" + (nick.empty() ? "*" : nick) + " QUIT :Quit: " + reason.substr((client->second->cmdtoken.args[0].find(':') != std::string::npos ? client->second->cmdtoken.args[0].find(':') : 0)) + "\r\n")
+#define QUITMSG(nick, reason) std::string(":" + (nick.empty() ? "*" : nick) + " QUIT :Quit: " + reason.substr(reason[0] == ':') + "\r\n")
 #define WELCOMEMSG(nick) std::string(":" + DOMAINNAME + " 001 " + (nick.empty() ? "*" : nick) + " :Welcome to ft_IRC\r\n")
 #define NAMESTART(nick, channel) std::string(":" + DOMAINNAME + " 353 " + (nick.empty() ? "*" : nick) + " = #" + channel + " :")
 #define NAMELIST(client) std::string((client->second ? " @" : " ") + client->first->nickname)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:26:08 by mbirou            #+#    #+#             */
-/*   Updated: 2025/04/01 17:09:06 by derey            ###   ########.fr       */
+/*   Updated: 2025/04/02 08:41:59 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	Commands::user(std::map<int, t_clientInfo*>::iterator client)
 	}
 
 	client->second->username = client->second->cmdtoken.args[0];
-	client->second->realname = client->second->cmdtoken.args[3].substr(1, client->second->cmdtoken.args[3].length());
+	client->second->realname = client->second->cmdtoken.args[3].substr(client->second->cmdtoken.args[1][0] == ':', client->second->cmdtoken.args[3].length());
 	client->second->logged = true;
 	PRINT "client:" AND "\n\tfd: " AND client->second->fd
 			AND "\n\tlogged: " AND client->second->logged

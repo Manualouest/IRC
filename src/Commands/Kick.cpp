@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: derey <derey@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 13:52:09 by derey             #+#    #+#             */
-/*   Updated: 2025/04/01 17:14:45 by derey            ###   ########.fr       */
+/*   Updated: 2025/04/02 08:41:52 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	Commands::kick(std::map<int, t_clientInfo*>::iterator client)
 	std::string user = client->second->cmdtoken.args[0];
 	std::string arg = client->second->nickname;
 	if (client->second->cmdtoken.args.size() > 1)	
-		arg = client->second->cmdtoken.args[1].substr(1, client->second->cmdtoken.args[1].length());
+		arg = client->second->cmdtoken.args[1].substr(client->second->cmdtoken.args[1][0] == ':', client->second->cmdtoken.args[1].length());
 
 	if (!Channels::isChannelReal(channel))
 	{
