@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 13:27:04 by mbirou            #+#    #+#             */
-/*   Updated: 2025/04/01 13:44:18 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/02 08:08:41 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void	Commands::tryJoin(std::map<int, t_clientInfo*>::iterator client, const std:
 	}
 	(*Channels::find(channel)).second->users.insert(std::pair<t_clientInfo *, bool>(client->second, false));
 	Utils::Send(client->first, USERJOIN(client->second->nickname, channel));
+	Utils::Send(client->first, JOINTOPIC(client->second->nickname, channel, Channels::find(channel)->second->topic));
 	Channels::sendMsg(channel, client->second->nickname, USERJOIN(client->second->nickname, channel));
 	Channels::names(channel, client->second);
 }
@@ -62,6 +63,7 @@ void	Commands::join(std::map<int, t_clientInfo*>::iterator client)
 	{
 		Channels::createChannel(channel, client->second);
 		Utils::Send(client->first, USERJOIN(client->second->nickname, channel));
+		Utils::Send(client->first, JOINTOPIC(client->second->nickname, channel, Channels::find(channel)->second->topic));
 		Channels::sendMsg(channel, client->second->nickname, USERJOIN(client->second->nickname, channel));
 		Channels::names(channel, client->second);
 	}

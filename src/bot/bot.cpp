@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 10:28:25 by mbatty            #+#    #+#             */
-/*   Updated: 2025/04/01 14:01:34 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/04/02 08:19:17 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ void	sendServer(const std::string &str)
 
 void	stop(int sig)
 {
-	(void)sig;
-	PRINT "Stopping" CENDL;
-	sendServer("QUIT :bot short circuited\r\n");
+	PRINT RED BOLD "Stopping" CENDL;
+	if (sig > 0)
+		sendServer("QUIT :bot short circuited\r\n");
 	close(client_fd);
 	isRunning = !isRunning;
 }
@@ -87,7 +87,7 @@ int	connectToServ(const std::string &pass)
 	return (1);
 }
 
-bool isSpace(char a)
+bool isSkippable(char a)
 {
 	if (a == '!' || a == '"' || a == '#' || a == '$' || a == '%' || a == '&' || a == '\''
 		|| a == '(' || a == ')' || a == '*' || a == '+' || a == ',' || a == '-' || a == '.'
@@ -108,7 +108,7 @@ int main(int ac, char **av)
 
 	if (ac != 3)
 	{
-		PRINT RED BOLD "usage: " AND av[0] AND " <erver port> <server password>" CENDL;
+		PRINT RED BOLD "usage: " AND av[0] AND " <server port> <server password>" CENDL;
 		return (1);
 	}
 	if (!innitConnection(av[1]) || !connectToServ(av[2]))
@@ -125,11 +125,8 @@ int main(int ac, char **av)
 		else if (msgRecv.find(" PRIVMSG ") != std::string::npos)
 		{
 			std::string tpMsg = msgRecv;
-			std::string::iterator clear = std::remove_if(tpMsg.begin(), tpMsg.end(), isSpace);
+			std::string::iterator clear = std::remove_if(tpMsg.begin(), tpMsg.end(), isSkippable);
 			tpMsg.erase(clear, tpMsg.end());
-			PRINT tpMsg CENDL;
-			PRINT "saw msg" CENDL;
-			PRINT tpMsg AND "\n, " AND (std::strcmp("quoi\r", tpMsg.c_str())) CENDL;
 			if (tpMsg.find("quoi\r") != std::string::npos)
 			{
 				if (rand() % 2)
@@ -143,8 +140,6 @@ int main(int ac, char **av)
 				sendServer(msgRecv.substr(msgRecv.find("PRIVMSG "), msgRecv.find(":", msgRecv.find("PRIVMSG ")) - msgRecv.find("PRIVMSG ")) + ":pong\r\n");
 			if (tpMsg.find("oui\r") != std::string::npos)
 				sendServer(msgRecv.substr(msgRecv.find("PRIVMSG "), msgRecv.find(":", msgRecv.find("PRIVMSG ")) - msgRecv.find("PRIVMSG ")) + ":stiti\r\n");
-			if (tpMsg.find("cristaline\r") != std::string::npos)
-				sendServer(msgRecv.substr(msgRecv.find("PRIVMSG "), msgRecv.find(":", msgRecv.find("PRIVMSG ")) - msgRecv.find("PRIVMSG ")) + ":STALINE\r\n");
 			if (tpMsg.find("ouais\r") != std::string::npos)
 				sendServer(msgRecv.substr(msgRecv.find("PRIVMSG "), msgRecv.find(":", msgRecv.find("PRIVMSG ")) - msgRecv.find("PRIVMSG ")) + ":stern\r\n");
 			if (tpMsg.find("a\r") != std::string::npos)
